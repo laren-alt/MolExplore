@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics | MolExplore{% endblock %}
+
+{% block content %}
+<h1>Molecule Statistics</h1>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Total Molecules</h3>
+        <p>{{ total_molecules }}</p>
+    </div>
+    <div class="col-md-6">
+        <h3>Molecular Weight Distribution</h3>
+        <img src="{{ url_for('static', filename='charts/weight_distribution.png') }}" alt="Weight Distribution">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Most Common Elements</h3>
+        <img src="{{ url_for('static', filename='charts/elements_pie_chart.png') }}" alt="Elements Pie Chart">
+    </div>
+    <div class="col-md-6">
+        <h3>Properties Correlation</h3>
+        <img src="{{ url_for('static', filename='charts/properties_correlation.png') }}" alt="Properties Correlation">
+    </div>
+</div>
+{% endblock %}

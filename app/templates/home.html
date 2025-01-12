@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Home | MolExplore{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <!-- Introduction Section -->
+    <div class="jumbotron text-center">
+        <h1>Welcome to MolExplore</h1>
+        <p>Discover and interact with molecular data through visualization and analysis.</p>
+        <a class="btn btn-primary" href="{{ url_for('main.gallery') }}">Explore Molecules</a>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section mb-5">
+        <h2 class="text-center">Features</h2>
+        <div class="row text-center">
+            <div class="col-md-4 feature">
+                <h4>Molecule Visualization</h4>
+                <p>Visualize molecules in detailed 3D models.</p>
+            </div>
+            <div class="col-md-4 feature">
+                <h4>Property Calculations</h4>
+                <p>Perform calculations to determine molecular properties efficiently.</p>
+            </div>
+            <div class="col-md-4 feature">
+                <h4>Comprehensive Database</h4>
+                <p>Search through a vast database of molecular data.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <form class="form-inline justify-content-center">
+        <input class="form-control mr-sm-2 w-50" type="search" placeholder="Search for molecules..." aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+    <!-- Chemical Chart (Placeholder) -->
+    <!-- Molecule Images -->
+    <div class="row">
+        {% for smi, img_path in molecule_images %}
+        <div class="col-md-4 text-center">
+            <img src="{{ img_path }}" alt="Molecule Image" class="img-thumbnail">
+            <p>{{ smi }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

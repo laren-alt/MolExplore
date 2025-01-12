@@ -1,0 +1,9 @@
+Flask
+Flask-PyMongo
+Flask-Bootstrap
+Flask-WTF
+WTForms
+rdkit
+sympy
+matplotlib
+Jinja2

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Molecule Details | MolExplore{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ molecule.name }}</h2>
+    </div>
+    <div class="card-body">
+        <p><strong>Formula:</strong> {{ molecule.formula }}</p>
+        <p><strong>Molecular Weight:</strong> {{ molecule.molecular_weight }}</p>
+        <p><strong>Number of Bonds:</strong> {{ molecule.properties.num_bonds }}</p>
+        <div>
+            <h4>2D Visualization</h4>
+            <img src="data:image/png;base64,{{ molecule.structure_2d }}" alt="2D structure">
+        </div>
+        <div>
+            <h4>3D Visualization</h4>
+            <div id="3d-viewer"></div>
+        </div>
+        <h4>Similar Molecules</h4>
+        <ul>
+            {% for similar in similar_molecules %}
+            <li>{{ similar.name }} - {{ similar.formula }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<script>
+    // Initialize 3Dmol.js visualization
+</script>
+{% endblock %}

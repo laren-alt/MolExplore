@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel | MolExplore{% endblock %}
+
+{% block content %}
+<h1>Admin Panel</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.formula.label }}
+        {{ form.formula(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.molecular_weight.label }}
+        {{ form.molecular_weight(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Add Molecule</button>
+</form>
+<h3>Existing Molecules</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Formula</th>
+            <th>Molecular Weight</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for molecule in molecules %}
+        <tr>
+            <td>{{ molecule.name }}</td>
+            <td>{{ molecule.formula }}</td>
+            <td>{{ molecule.molecular_weight }}</td>
+            <td>
+                <a href="/edit/{{ molecule.id }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/delete/{{ molecule.id }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
