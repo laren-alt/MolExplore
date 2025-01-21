@@ -3,49 +3,134 @@
 {% block title %}Home | MolExplore{% endblock %}
 
 {% block content %}
-<div class="jumbotron text-center">
-    <!-- Introduction Section -->
-    <div class="jumbotron text-center">
-        <h1>Welcome to MolExplore</h1>
-        <p>Discover and interact with molecular data through visualization and analysis.</p>
-        <a class="btn btn-primary" href="{{ url_for('main.gallery') }}">Explore Molecules</a>
+<div class="text-center text-white">
+    <div class="hero-section">
+        <h1 class="display-4">Welcome to MolExplore</h1>
+        <p class="lead">Discover and interact with molecular data through visualization and analysis.</p>
+        <a class="btn btn-lg btn-light mt-3" href="{{ url_for('main.gallery') }}">Explore Molecules</a>
     </div>
-
-    <!-- Features Section -->
-    <div class="features-section mb-5">
-        <h2 class="text-center">Features</h2>
-        <div class="row text-center">
-            <div class="col-md-4 feature">
-                <h4>Molecule Visualization</h4>
-                <p>Visualize molecules in detailed 3D models.</p>
-            </div>
-            <div class="col-md-4 feature">
-                <h4>Property Calculations</h4>
-                <p>Perform calculations to determine molecular properties efficiently.</p>
-            </div>
-            <div class="col-md-4 feature">
-                <h4>Comprehensive Database</h4>
-                <p>Search through a vast database of molecular data.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Bar -->
-    <form class="form-inline justify-content-center">
-        <input class="form-control mr-sm-2 w-50" type="search" placeholder="Search for molecules..." aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-
-    <!-- Chemical Chart (Placeholder) -->
-    <!-- Molecule Images -->
-    <div class="row">
-        {% for smi, img_path in molecule_images %}
-        <div class="col-md-4 text-center">
-            <img src="{{ img_path }}" alt="Molecule Image" class="img-thumbnail">
-            <p>{{ smi }}</p>
-        </div>
-        {% endfor %}
-    </div>
-
 </div>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Features</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center p-5">
+                        <h4 class="card-title">Molecule Visualization</h4>
+                        <p class="card-text">Visualize molecules in detailed 3D models.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center p-5">
+                        <h4 class="card-title">Property Calculations</h4>
+                        <p class="card-text">Perform calculations to determine molecular properties efficiently.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center p-5">
+                        <h4 class="card-title">Comprehensive Database</h4>
+                        <p class="card-text">Search through a vast database of molecular data.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<section class="search-section py-5">
+    <div class="container">
+        <form class="form-inline d-flex justify-content-center">
+            <input id="search-input" class="form-control form-control-lg w-50 mr-2" type="search" placeholder="Search for molecules..." aria-label="Search" oninput="filterMolecules()">
+            <button class="btn btn-success btn-lg" type="button" onclick="clearSearch()">Clear</button>
+        </form>
+    </div>
+</section>
+
+<!-- Molecule Images Section -->
+<section class="molecule-images-section py-3 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Explore Molecules</h2>
+        <div class="row" id="molecule-container">
+            {% for molecule in molecule_data %}
+            <div class="col-md-3 mb-4">
+                <a href="{{ url_for('main.molecule_detail', molecule_name=molecule.name) }}" class="text-decoration-none">
+                    <div class="card shadow molecule-card" data-name="{{ molecule.name }}" data-formula="{{ molecule.formula }}" data-weight="{{ molecule.molecular_weight }}">
+                        <div class="card-header text-center">
+                            <h5>{{ molecule.name }}</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="d-flex justify-content-center align-items-center" id="drawer-{{ loop.index }}" style="width: 150px; height: 150px; margin: auto;"></div>
+                            <p class="mt-2"><strong>Formula:</strong> {{ molecule.formula }}</p>
+                            <p><strong>Molecular Weight:</strong> {{ molecule.molecular_weight }} g/mol</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        window
+            .initRDKitModule()
+            .then(function (RDKit) {
+                console.log("RDKit version: " + RDKit.version());
+                window.RDKit = RDKit;
+                drawMolecules();
+            })
+            .catch((err) => {
+                console.error("RDKit initialization failed:", err);
+            });
+    });
+
+    function drawMolecules() {
+        const moleculeData = {{ molecule_data|tojson|safe }};
+        moleculeData.forEach((molecule, index) => {
+            const mol = window.RDKit.get_mol(molecule.structure);
+            if (mol) {
+                const svg = mol.get_svg();
+                const container = document.getElementById(`drawer-${index + 1}`);
+                if (container) {
+                    container.innerHTML = svg;
+                } else {
+                    console.error(`Container with ID drawer-${index + 1} not found.`);
+                }
+            }
+        });
+    }
+
+    function filterMolecules() {
+        const searchInput = document.getElementById("search-input").value.toLowerCase();
+        const cards = document.querySelectorAll(".molecule-card");
+
+        cards.forEach((card) => {
+            const name = card.getAttribute("data-name").toLowerCase();
+            const formula = card.getAttribute("data-formula").toLowerCase();
+            const weight = card.getAttribute("data-weight").toLowerCase();
+
+            if (name.includes(searchInput) || formula.includes(searchInput) || weight.includes(searchInput)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    function clearSearch() {
+        document.getElementById("search-input").value = "";
+        filterMolecules();
+    }
+</script>
+
 {% endblock %}

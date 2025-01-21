@@ -1,0 +1,133 @@
+/* General styles for a clean design */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.hero-section {
+    background: linear-gradient(120deg, #007bff, #6c757d);
+    color: white;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+}
+
+.molecule-card {
+    /* border: 1px solid #ddd; */
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.molecule-card:hover {
+    transform: translateY(-5px);
+    /* box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); */
+}
+
+.molecule-card img {
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.molecule-card .card-body {
+    padding: 1rem;
+    text-align: center;
+}
+
+.molecule-card .card-body h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.molecule-card .card-body p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.navbar-toggler:active,
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler {
+    border: none !important;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
+.form-control:focus,
+.form-control:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid #242329;
+}
+
+.card {
+    border: none;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 20px rgba(18, 38, 63, .0313726);
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(34, 41, 47, 0.125);
+    border-radius: 0.428rem;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(120deg, #007bff, #6c757d);
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 14px;
+    color: #fff;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* #elementChart {
+    height: 600px!important;
+    width: 100%!important;
+} */
+
+.s-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}

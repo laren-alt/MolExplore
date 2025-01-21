@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <meta name="description" content="Molecular">
+    <meta name="description" content="Explore chemical molecules interactively">
     <title>{% block title %}MolExplore{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <style>
+        .nav-link.active {
+            color: #0d6efd !important;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('main.home') }}">MolExplore</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.gallery') }}">Molecule Gallery</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.gallery') }}">Statistics</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.admin') }}">Admin Panel</a></li>
-            </ul>
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <img class="logo-img" src="{{ url_for('static', filename='images/logo.png') }}" alt="MolExplore" />
+                <span>MolExplore</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </nav>
 
+    <!-- Content Section -->
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
 
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <p class="mb-0">&copy; 2025 MolExplore. All rights reserved.</p>
+    </footer>
 </body>
+
 </html>

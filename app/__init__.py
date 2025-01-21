@@ -15,8 +15,9 @@ def create_app():
     Bootstrap(app)
     csrf.init_app(app)
     
-    # Register blueprints/routes
+    # Set up application context explicitly for any components that need it
     with app.app_context():
+        # Register blueprints/routes within app context
         from .routes import main
         app.register_blueprint(main)
     

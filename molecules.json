@@ -1,0 +1,230 @@
+[
+    {
+        "name": "Ascorbic Acid",
+        "formula": "C6H8O6",
+        "molecular_weight": "176.120",
+        "structure": "C([C@@H]([C@@H]1C(=C(C(=O)O1)O)O)O)O"
+    },
+    {
+        "name": "Chloramphenicol",
+        "formula": "C11H12Cl2N2O5",
+        "molecular_weight": "323.130",
+        "structure": "C1=CC(=CC=C1[C@H]([C@@H](CO)NC(=O)C(Cl)Cl)O)[N+](=O)[O-]"
+    },
+    {
+        "name": "Phenol",
+        "formula": "C6H6O",
+        "molecular_weight": "94.110",
+        "structure": "C1=CC=C(C=C1)O"
+    },
+    {
+        "name": "Dexamethasone",
+        "formula": "C22H29FO5",
+        "molecular_weight": "392.500",
+        "structure": "C[C@@H]1C[C@H]2[C@@H]3CCC4=CC(=O)C=C[C@@]4([C@]3([C@H](C[C@@]2([C@]1(C(=O)CO)O)C)O)F)C"
+    },
+    {
+        "name": "Adenosine",
+        "formula": "C10H13N5O4",
+        "molecular_weight": "267.240",
+        "structure": "C1=NC(=C2C(=N1)N(C=N2)[C@H]3[C@@H]([C@@H]([C@H](O3)CO)O)O)N"
+    },
+    {
+        "name": "Testosterone",
+        "formula": "C19H28O2",
+        "molecular_weight": "288.400",
+        "structure": "C[C@]12CC[C@H]3[C@H]([C@@H]1CC[C@@H]2O)CCC4=CC(=O)CC[C@]34C"
+    },
+    {
+        "name": "Cytarabine",
+        "formula": "C9H13N3O5",
+        "molecular_weight": "243.220",
+        "structure": "C1=CN(C(=O)N=C1N)[C@H]2[C@H]([C@@H]([C@H](O2)CO)O)O"
+    },
+    {
+        "name": "Ethanol",
+        "formula": "C2H6O",
+        "molecular_weight": "46.070",
+        "structure": "CCO"
+    },
+    {
+        "name": "Estrone",
+        "formula": "C18H22O2",
+        "molecular_weight": "270.400",
+        "structure": "C[C@]12CC[C@H]3[C@H]([C@@H]1CCC2=O)CCC4=C3C=CC(=C4)O"
+    },
+    {
+        "name": "Erythromycin",
+        "formula": "C37H67NO13",
+        "molecular_weight": "733.900",
+        "structure": "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)O)(C)O"
+    },
+    {
+        "name": "Linezolid",
+        "formula": "C16H20FN3O4",
+        "molecular_weight": "337.350",
+        "structure": "CC(=O)NC[C@H]1CN(C(=O)O1)C2=CC(=C(C=C2)N3CCOCC3)F"
+    },
+    {
+        "name": "Meloxicam",
+        "formula": "C14H13N3O4S2",
+        "molecular_weight": "351.400",
+        "structure": "CC1=CN=C(S1)NC(=O)C2=C(C3=CC=CC=C3S(=O)(=O)N2C)O"
+    },
+    {
+        "name": "Paclitaxel",
+        "formula": "C47H51NO14",
+        "molecular_weight": "853.900",
+        "structure": "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C"
+    },
+    {
+        "name": "Acetylcysteine",
+        "formula": "C5H9NO3S",
+        "molecular_weight": "163.200",
+        "structure": "CC(=O)N[C@@H](CS)C(=O)O"
+    },
+    {
+        "name": "Hydrochlorothiazide",
+        "formula": "C7H8ClN3O4S2",
+        "molecular_weight": "297.700",
+        "structure": "C1NC2=CC(=C(C=C2S(=O)(=O)N1)S(=O)(=O)N)Cl"
+    },
+    {
+        "name": "Tylosin",
+        "formula": "C46H77NO17",
+        "molecular_weight": "916.100",
+        "structure": "CC[C@@H]1[C@H](/C=C(/C=C/C(=O)[C@@H](C[C@@H]([C@@H]([C@H]([C@@H](CC(=O)O1)O)C)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C)O[C@H]3C[C@@]([C@H]([C@@H](O3)C)O)(C)O)N(C)C)O)CC=O)C)\\C)CO[C@H]4[C@@H]([C@@H]([C@@H]([C@H](O4)C)O)OC)OC"
+    },
+    {
+        "name": "Lincomycin",
+        "formula": "C18H34N2O6S",
+        "molecular_weight": "406.500",
+        "structure": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)[C@@H](C)O"
+    },
+    {
+        "name": "Spectinomycin",
+        "formula": "C14H24N2O7",
+        "molecular_weight": "332.350",
+        "structure": "C[C@@H]1CC(=O)[C@]2([C@@H](O1)O[C@@H]3[C@H]([C@@H]([C@@H]([C@@H]([C@H]3O2)NC)O)NC)O)O"
+    },
+    {
+        "name": "Ethylenediamine",
+        "formula": "C2H8N2",
+        "molecular_weight": "60.100",
+        "structure": "C(CN)N"
+    },
+    {
+        "name": "Bortezomib",
+        "formula": "C19H25BN4O4",
+        "molecular_weight": "384.200",
+        "structure": "B([C@H](CC(C)C)NC(=O)[C@H](CC1=CC=CC=C1)NC(=O)C2=NC=CN=C2)(O)O"
+    },
+    {
+        "name": "Ondansetron",
+        "formula": "C18H19N3O",
+        "molecular_weight": "293.400",
+        "structure": "CC1=NC=CN1CC2CCC3=C(C2=O)C4=CC=CC=C4N3C"
+    },
+    {
+        "name": "Streptomycin Sulfate",
+        "formula": "C42H84N14O36S3",
+        "molecular_weight": "1457.400",
+        "structure": "C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O.C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O.OS(=O)(=O)O.OS(=O)(=O)O.OS(=O)(=O)O"
+    },
+    {
+        "name": "Oxytetracycline hydrochloride",
+        "formula": "C22H25ClN2O9",
+        "molecular_weight": "496.900",
+        "structure": "C[C@@]1([C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O)O.Cl"
+    },
+    {
+        "name": "Propofol",
+        "formula": "C12H18O",
+        "molecular_weight": "178.270",
+        "structure": "CC(C)C1=C(C(=CC=C1)C(C)C)O"
+    },
+    {
+        "name": "Diazoxide",
+        "formula": "C8H7ClN2O2S",
+        "molecular_weight": "230.670",
+        "structure": "CC1=NS(=O)(=O)C2=C(N1)C=CC(=C2)Cl"
+    },
+    {
+        "name": "Nitroglycerin",
+        "formula": "C3H5N3O9",
+        "molecular_weight": "227.090",
+        "structure": "C(C(CO[N+](=O)[O-])O[N+](=O)[O-])O[N+](=O)[O-]"
+    },
+    {
+        "name": "Midazolam",
+        "formula": "C18H13ClFN3",
+        "molecular_weight": "325.800",
+        "structure": "CC1=NC=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4F"
+    },
+    {
+        "name": "Etomidate",
+        "formula": "C14H16N2O2",
+        "molecular_weight": "244.290",
+        "structure": "CCOC(=O)C1=CN=CN1[C@H](C)C2=CC=CC=C2"
+    },
+    {
+        "name": "Pemetrexed",
+        "formula": "C20H21N5O6",
+        "molecular_weight": "427.400",
+        "structure": "C1=CC(=CC=C1CCC2=CNC3=C2C(=O)NC(=N3)N)C(=O)N[C@@H](CCC(=O)O)C(=O)O"
+    },
+    {
+        "name": "Polidocanol",
+        "formula": "C30H62O10",
+        "molecular_weight": "582.800",
+        "structure": "CCCCCCCCCCCCOCCOCCOCCOCCOCCOCCOCCOCCOCCO"
+    },
+    {
+        "name": "Florfenicol",
+        "formula": "C12H14Cl2FNO4S",
+        "molecular_weight": "358.200",
+        "structure": "CS(=O)(=O)C1=CC=C(C=C1)[C@H]([C@@H](CF)NC(=O)C(Cl)Cl)O"
+    },
+    {
+        "name": "Water",
+        "formula": "H2O",
+        "molecular_weight": "18.015",
+        "structure": "O"
+    },
+    {
+        "name": "Perflutren",
+        "formula": "C3F8",
+        "molecular_weight": "188.020",
+        "structure": "C(C(F)(F)F)(C(F)(F)F)(F)F"
+    },
+    {
+        "name": "Daptomycin",
+        "formula": "C72H101N17O26",
+        "molecular_weight": "1620.700",
+        "structure": "CCCCCCCCCC(=O)N[C@@H](CC1=CNC2=CC=CC=C21)C(=O)N[C@H](CC(=O)N)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@H]3[C@H](OC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@H](NC(=O)CNC(=O)[C@@H](NC(=O)[C@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)CNC3=O)CCCN)CC(=O)O)C)CC(=O)O)CO)[C@H](C)CC(=O)O)CC(=O)C4=CC=CC=C4N)C"
+    },
+    {
+        "name": "Clindamycin Phosphate",
+        "formula": "C18H34ClN2O8PS",
+        "molecular_weight": "505.000",
+        "structure": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)OP(=O)(O)O)O)O)[C@H](C)Cl"
+    },
+    {
+        "name": "Tylosin Tartrate",
+        "formula": "C50H83NO23",
+        "molecular_weight": "1066.200",
+        "structure": "CC[C@@H]1[C@H](/C=C(/C=C/C(=O)[C@@H](C[C@@H]([C@@H]([C@H]([C@@H](CC(=O)O1)O)C)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C)O[C@H]3C[C@@]([C@H]([C@@H](O3)C)O)(C)O)N(C)C)O)CC=O)C)\\C)CO[C@H]4[C@@H]([C@@H]([C@@H]([C@H](O4)C)O)OC)OC.[C@@H]([C@H](C(=O)O)O)(C(=O)O)O"
+    },
+    {
+        "name": "Humulin N",
+        "formula": "C257H383N65O77S6",
+        "molecular_weight": "5808.000",
+        "structure": "CC[C@H](C)[C@H]1C(=O)N[C@H]2CSSC[C@@H](C(=O)N[C@@H](CSSC[C@@H](C(=O)NCC(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@@H](CSSC[C@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC2=O)CO)CC(C)C)CC3=CC=C(C=C3)O)CCC(=O)N)CC(C)C)CCC(=O)O)CC(=O)N)CC4=CC=C(C=C4)O)C(=O)N[C@@H](CC(=O)N)C(=O)O)C(=O)NCC(=O)N[C@@H](CCC(=O)O)C(=O)N[C@@H](CCCNC(=N)N)C(=O)NCC(=O)N[C@@H](CC5=CC=CC=C5)C(=O)N[C@@H](CC6=CC=CC=C6)C(=O)N[C@@H](CC7=CC=C(C=C7)O)C(=O)N[C@@H]([C@@H](C)O)C(=O)N8CCC[C@H]8C(=O)N[C@@H](CCCCN)C(=O)N[C@@H]([C@@H](C)O)C(=O)O)C(C)C)CC(C)C)CC9=CC=C(C=C9)O)CC(C)C)C)CCC(=O)O)C(C)C)CC(C)C)CC2=CNC=N2)CO)NC(=O)[C@H](CC(C)C)NC(=O)[C@H](CC2=CNC=N2)NC(=O)[C@H](CCC(=O)N)NC(=O)[C@H](CC(=O)N)NC(=O)[C@H](C(C)C)NC(=O)[C@H](CC2=CC=CC=C2)N)C(=O)N[C@H](C(=O)N[C@H](C(=O)N1)CO)[C@@H](C)O)NC(=O)[C@H](CCC(=O)N)NC(=O)[C@H](CCC(=O)O)NC(=O)[C@H](C(C)C)NC(=O)[C@H]([C@@H](C)CC)NC(=O)CN"
+    },
+    {
+        "name": "Tulathromycin",
+        "formula": "C41H79N3O12",
+        "molecular_weight": "806.100",
+        "structure": "CCCNC[C@@]1([C@@H](O[C@H](C[C@@]1(C)OC)O[C@H]2[C@@H]([C@H]([C@](C[C@H](CN[C@@H]([C@H]([C@]([C@H](OC(=O)[C@@H]2C)CC)(C)O)O)C)C)(C)O)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)C)C)O"
+    }
+]
