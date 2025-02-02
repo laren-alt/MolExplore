@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Molecule Statistics | MolExplore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h3 class="text-center mb-4">Molecule Statistics</h3>
+
+    <!-- Statistics Display -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Molecules</h5>
+                    <p class="display-4">{{ molecules|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Average Molecular Weight</h5>
+                    <p class="display-4">
+                        {% if molecules|length > 0 %}
+                            {{ ((molecules | sum(attribute='molecular_weight')) / molecules|length) | round(3) }}
+                        {% else %}
+                            0.00
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Most Common Element</h5>
+                    <p class="display-4">
+                        {{ most_common_element if most_common_element else "N/A" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row">
+        <!-- Molecular Weight Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Molecular Weight Distribution</h5>
+                    <canvas id="weightHistogram"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Most Common Elements Pie Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Most Common Elements</h5>
+                    <div id="elementPie"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scatter Plot -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Molecular Weight vs. Bond Count</h5>
+                    <canvas id="scatterPlot"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Charts -->
+<script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+<script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Data for the charts
+        const weightData = {{ molecular_weights | tojson | safe }};
+        const elementData = {{ element_distribution | tojson | safe }};
+        const scatterData = {{ scatter_data | tojson | safe }};
+
+        // Molecular Weight Distribution Histogram
+        const ctxHistogram = document.getElementById("weightHistogram").getContext("2d");
+        new Chart(ctxHistogram, {
+            type: "bar",
+            data: {
+                labels: Object.keys(weightData),
+                datasets: [{
+                    label: "Molecular Weights",
+                    data: Object.values(weightData),
+                    backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Most Common Elements Pie Chart
+        Highcharts.chart("elementPie", {
+            chart: { type: "pie" },
+            title: { text: "Element Distribution" },
+            series: [{
+                name: "Count",
+                colorByPoint: true,
+                data: Object.entries(elementData).map(([key, value]) => ({ name: key, y: value }))
+            }]
+        });
+
+        // Molecular Weight vs. Bond Count Scatter Plot
+        const ctxScatter = document.getElementById("scatterPlot").getContext("2d");
+        new Chart(ctxScatter, {
+            type: "scatter",
+            data: {
+                datasets: [{
+                    label: "Molecular Weight vs. Bond Count",
+                    data: scatterData,
+                    backgroundColor: "rgba(255, 9, 13, 0.5)"
+                }]
+            },
+            options: {
+                scales: {
+                    x: { type: "linear", position: "bottom", title: { display: true, text: "Molecular Weight" } },
+                    y: { title: { display: true, text: "Bond Count" } }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
