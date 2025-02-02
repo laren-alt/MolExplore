@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Molecule Gallery | MolExplore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h3 class="text-center mb-4">Molecule Gallery</h3>
+
+    <!-- Search, Filters, and Sorting -->
+    <form method="GET" action="{{ url_for('main.gallery') }}" class="row g-3 align-items-center mb-4">
+        <!-- Search -->
+        <div class="col-lg-3 col-md-6">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control" 
+                placeholder="Search by name" 
+                value="{{ search }}">
+        </div>
+    
+        <!-- Molecular Weight Filter -->
+        <div class="col-lg-2 col-md-6">
+            <input 
+                type="number" 
+                name="min_weight" 
+                class="form-control" 
+                placeholder="Min Weight" 
+                value="{{ min_weight }}">
+        </div>
+        <div class="col-lg-2 col-md-6">
+            <input 
+                type="number" 
+                name="max_weight" 
+                class="form-control" 
+                placeholder="Max Weight" 
+                value="{{ max_weight }}">
+        </div>
+    
+        <!-- Sort By -->
+        <div class="col-lg-2 col-md-6">
+            <select class="form-control" name="sort_by">
+                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
+                <option value="molecular_weight" {% if sort_by == 'molecular_weight' %}selected{% endif %}>Sort by Molecular Weight</option>
+            </select>
+        </div>
+    
+        <!-- Submit Button -->
+        <div class="col-lg-3 col-md-12 text-lg-right">
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </div>
+    </form>
+    
+
+    <!-- Molecule List -->
+    <div class="row">
+        {% if molecules %}
+            {% for molecule in molecules %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow molecule-card">
+                    <div class="card-header text-center">
+                        <h5>{{ molecule['name'] }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="drawer-{{ loop.index }}" class="d-flex justify-content-center align-items-center" style="width: 150px; height: 150px; margin: auto;">
+                            <!-- 2D structure rendered here -->
+                        </div>
+                        <p class="card-text">Formula: {{ molecule['formula'] }}</p>
+                        <p class="card-text">Weight: {{ molecule['molecular_weight'] }} g/mol</p>
+                        <a href="{{ url_for('main.details', molecule_id=molecule['_id']) }}" class="btn btn-info btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">No molecules found matching your criteria.</div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            {% if page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.gallery', page=page-1, search=search, sort_by=sort_by, min_weight=min_weight, max_weight=max_weight) }}">
+                    &laquo; Previous
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('main.gallery', page=p, search=search, sort_by=sort_by, min_weight=min_weight, max_weight=max_weight) }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.gallery', page=page+1, search=search, sort_by=sort_by, min_weight=min_weight, max_weight=max_weight) }}">
+                    Next &raquo;
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- RDKit.js for Molecule Visualization -->
+<script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        window
+            .initRDKitModule()
+            .then(function (RDKit) {
+                console.log("RDKit version:", RDKit.version());
+                window.RDKit = RDKit;
+                drawMolecules();
+            })
+            .catch((error) => {
+                console.error("RDKit initialization failed:", error);
+            });
+
+        function drawMolecules() {
+            const molecules = {{ molecules|tojson|safe }};
+            molecules.forEach((molecule, index) => {
+                const containerId = `drawer-${index + 1}`;
+                const container = document.getElementById(containerId);
+
+                if (molecule.structure && container) {
+                    try {
+                        const mol = RDKit.get_mol(molecule.structure);
+                        const svg = mol.get_svg();
+                        container.innerHTML = svg;
+                    } catch (error) {
+                        console.error(`Error rendering molecule ${molecule.name}:`, error);
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
