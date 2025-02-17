@@ -38,6 +38,14 @@
                     <li class="nav-item">
                         <a class="nav-link {% if 'stats' in request.path %}active{% endif %}" href="{{ url_for('main.stats') }}">Statistics</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'admin' in request.path %}active{% endif %}" href="{{ url_for('main.admin') }}">Admin Panel</a>
+                    </li>
+                    {% if session.get('user') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel | MolExplore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h3 class="text-center mb-4">Admin Panel</h3>
+    
+    <!-- Link to Create Molecule Form -->
+    <div class="d-grid mb-4">
+        <a href="{{ url_for('main.create_molecule') }}" class="btn btn-primary">Add New Molecule</a>
+    </div>
+
+    <!-- Molecules Grid -->
+    <div class="row">
+        {% if molecules %}
+            {% for molecule in molecules %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm molecule-card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h5 class="card-title mb-0">{{ molecule['name'] }}</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="molecule-drawer-{{ loop.index }}" 
+                             class="d-flex justify-content-center align-items-center border" 
+                             style="width: 150px; height: 150px; margin: auto;">
+                        </div>
+                        <p><strong>Formula:</strong> {{ molecule['formula'] }}</p>
+                        <p><strong>Molecular Weight:</strong> {{ molecule['molecular_weight'] }} g/mol</p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{{ url_for('main.molecule_details', molecule_id=molecule['_id']) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ url_for('main.update_molecule', molecule_id=molecule['_id']) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="{{ url_for('main.delete_molecule', molecule_id=molecule['_id']) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center">No molecules available. Please add a molecule.</div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            {% if page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.admin', page=page-1) }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('main.admin', page=p) }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.admin', page=page+1) }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- RDKit.js for Molecule Visualization -->
+<script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize RDKit.js
+        window
+            .initRDKitModule()
+            .then(function (RDKit) {
+                console.log("RDKit version:", RDKit.version());
+                window.RDKit = RDKit;
+                drawMolecules();
+            })
+            .catch((error) => {
+                console.error("RDKit initialization failed:", error);
+            });
+
+        // Draw Molecules
+        function drawMolecules() {
+            const molecules = {{ molecules|tojson|safe }};
+            molecules.forEach((molecule, index) => {
+                const containerId = `molecule-drawer-${index + 1}`;
+                const container = document.getElementById(containerId);
+
+                if (molecule.structure && container) {
+                    try {
+                        const mol = RDKit.get_mol(molecule.structure);
+                        const svg = mol.get_svg();
+                        container.innerHTML = svg;
+                    } catch (error) {
+                        console.error(`Error rendering molecule ${molecule.name}:`, error);
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
