@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Molecule | MolExplore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h3 class="text-center mb-4">Edit Molecule</h3>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {{ form.hidden_tag() }}
+
+                <!-- Name Field -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Molecule Name</label>
+                    {{ form.name(class="form-control", id="name", required=True) }}
+                    <div class="invalid-feedback">
+                        Please provide the molecule name.
+                    </div>
+                </div>
+
+                <!-- Formula Field -->
+                <div class="mb-3">
+                    <label for="formula" class="form-label">Molecule Formula</label>
+                    {{ form.formula(class="form-control", id="formula", required=True) }}
+                    <div class="invalid-feedback">
+                        Please provide the molecular formula.
+                    </div>
+                </div>
+
+                <!-- Molecular Weight Field -->
+                <div class="mb-3">
+                    <label for="molecular_weight" class="form-label">Molecular Weight</label>
+                    {{ form.molecular_weight(class="form-control", id="molecular_weight", required=True) }}
+                    <div class="invalid-feedback">
+                        Please provide the molecular weight.
+                    </div>
+                </div>
+
+                <!-- Structure Field -->
+                <div class="mb-3">
+                    <label for="structure" class="form-label">Molecule Structure (SMILES)</label>
+                    {{ form.structure(class="form-control", id="structure", required=True) }}
+                    <div class="invalid-feedback">
+                        Please provide a valid SMILES structure.
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Bootstrap Validation Script
+    (function () {
+        "use strict";
+        const forms = document.querySelectorAll(".needs-validation");
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener(
+                "submit",
+                function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add("was-validated");
+                },
+                false
+            );
+        });
+    })();
+</script>
+{% endblock %}

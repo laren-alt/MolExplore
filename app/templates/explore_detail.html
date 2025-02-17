@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Molecule Details | {{ molecule.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header text-white text-center py-4" style="background: linear-gradient(120deg, #007bff, #6c757d);">
+            <h1 class="display-5">{{ molecule.name }}</h1>
+            <p class="lead">Detailed Information and Visualization</p>
+        </div>
+        <div class="card-body p-5">
+            <div class="row">
+                <!-- Molecular Structure Section -->
+                <div class="col-md-6 text-center mb-4">
+                    <h4 class="mb-4 text-secondary">Molecular Structure</h4>
+                    <div id="molecule-drawer" style="width: 300px; height: 300px; margin: auto; border-radius: 10px;"></div>
+                </div>
+
+                <!-- Molecular Details Section -->
+                <div class="col-md-6">
+                    <h4 class="text-secondary mb-4">Molecule Details</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Formula:</strong> {{ molecule.formula }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Molecular Weight:</strong> {{ molecule.molecular_weight }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Description:</strong> {{ molecule.description }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Additional Information Section -->
+            <div class="mt-5">
+                <h4 class="text-secondary mb-4">Additional Information</h4>
+                <p class="text-muted">
+                    {{ molecule.additional_info if molecule.additional_info else "No additional information available for this molecule." }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        window
+            .initRDKitModule()
+            .then(function (RDKit) {
+                console.log("RDKit initialized successfully.");
+                drawMolecule(RDKit);
+            })
+            .catch((err) => {
+                console.error("Failed to initialize RDKit:", err);
+            });
+    });
+
+    function drawMolecule(RDKit) {
+        const structure = "{{ molecule.structure }}"; // Molecular structure from the backend
+        if (!structure || structure === "None") {
+            console.error("Invalid or missing molecular structure.");
+            document.getElementById("molecule-drawer").innerHTML = "<p class='text-danger'>Unable to render structure.</p>";
+            return;
+        }
+
+        const mol = RDKit.get_mol(structure);
+        if (mol) {
+            const svg = mol.get_svg(); // Generate the SVG
+            const container = document.getElementById("molecule-drawer");
+            container.innerHTML = svg;
+        } else {
+            console.error("Failed to create molecule object from structure.");
+            document.getElementById("molecule-drawer").innerHTML = "<p class='text-danger'>Structure rendering failed.</p>";
+        }
+    }
+</script>
+
+{% endblock %}

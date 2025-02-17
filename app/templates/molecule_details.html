@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Molecule Details | MolExplore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Molecule Details Header -->
+    <div class="card shadow mb-4">
+        <div class="card-header text-white text-center" style="background: linear-gradient(120deg, #007bff, #6c757d);">
+            <h2>{{ molecule.name }}</h2>
+            <p class="mb-0">Comprehensive details of the molecule</p>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Molecule Properties -->
+                <div class="col-lg-6 mb-4">
+                    <h4 class="text-primary">Molecule Properties</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Formula:</strong> {{ molecule.formula }}</li>
+                        <li class="list-group-item"><strong>Molecular Weight:</strong> {{ molecule.molecular_weight }}</li>
+                        <li class="list-group-item"><strong>Molecular Smiles:</strong> {{ molecule.structure }}</li>
+                    </ul>
+                </div>
+                <!-- Similar Molecules Section -->
+                <div class="col-lg-6 mb-4">
+                    <h4 class="text-primary">Similar Molecules</h4>
+                    {% if similar_molecules %}
+                    <ul class="list-group">
+                        {% for similar in similar_molecules %}
+                        <li class="list-group-item">
+                            <strong>{{ similar.name }}</strong> - {{ similar.formula }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">No similar molecules found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualization Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white text-center">
+            <h4>Visualizations</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- 2D Visualization -->
+                <div class="col-md-6 mb-4">
+                    <div class="text-center">
+                        <h5>2D Structure</h5>
+                        <div id="structure-2d" class="border rounded p-3" style="min-height: 400px;">
+                            <!-- SVG will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+                <!-- 3D Visualization -->
+                <div class="col-md-6 mb-4">
+                    <div class="text-center">
+                        <h5>3D Structure</h5>
+                        <div id="viewer-3d" class="border rounded bg-light" style="width: 100%; height: 400px; position: relative;">
+                            <!-- 3Dmol Viewer will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/3Dmol.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize RDKit.js
+        window.initRDKitModule().then(function (RDKit) {
+            // Render 2D Structure
+            const mol2D = RDKit.get_mol("{{ molecule.structure }}");
+            const structure2dDiv = document.getElementById("structure-2d");
+            if (mol2D && structure2dDiv) {
+                const svg = mol2D.get_svg();
+                structure2dDiv.innerHTML = svg; // Set SVG content
+            } else {
+                structure2dDiv.innerHTML = "<p class='text-danger'>Failed to render 2D structure.</p>";
+            }
+
+            // Render 3D Structure
+            const viewer = $3Dmol.createViewer("viewer-3d", {
+                backgroundColor: "white",
+            });
+            if (mol2D) {
+                const conformer = mol2D.get_new_coords();
+                if (conformer) {
+                    viewer.addModel(conformer, "mol");
+                    viewer.setStyle({}, { stick: { radius: 0.15 } });
+                    viewer.zoomTo();
+                    viewer.render();
+                } else {
+                    console.error("Failed to generate 3D conformer.");
+                }
+            } else {
+                console.error("Failed to initialize molecule for 3D rendering.");
+            }
+        }).catch(function (error) {
+            console.error("Error initializing RDKit:", error);
+        });
+    });
+</script>
+{% endblock %}
