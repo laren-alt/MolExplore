@@ -2,229 +2,268 @@
     {
         "name": "Ascorbic Acid",
         "formula": "C6H8O6",
-        "molecular_weight": "176.120",
-        "structure": "C([C@@H]([C@@H]1C(=C(C(=O)O1)O)O)O)O"
+        "molecular_weight": 176.120,
+        "structure": "C([C@@H]([C@@H]1C(=C(C(=O)O1)O)O)O)O",
+        "description": "A water-soluble vitamin essential for collagen synthesis, immune function, and antioxidant protection. Found in citrus fruits, berries, and vegetables. Used in supplements, skincare, and as a food preservative."
     },
     {
         "name": "Chloramphenicol",
         "formula": "C11H12Cl2N2O5",
-        "molecular_weight": "323.130",
-        "structure": "C1=CC(=CC=C1[C@H]([C@@H](CO)NC(=O)C(Cl)Cl)O)[N+](=O)[O-]"
+        "molecular_weight": 323.130,
+        "structure": "C1=CC(=CC=C1[C@H]([C@@H](CO)NC(=O)C(Cl)Cl)O)[N+](=O)[O-]",
+        "description": "A broad-spectrum antibiotic used to treat bacterial infections, including typhoid fever and meningitis. It inhibits bacterial protein synthesis but has serious side effects like bone marrow suppression."
     },
     {
         "name": "Phenol",
         "formula": "C6H6O",
-        "molecular_weight": "94.110",
-        "structure": "C1=CC=C(C=C1)O"
+        "molecular_weight": 94.110,
+        "structure": "C1=CC=C(C=C1)O",
+        "description": "A caustic aromatic compound used as an antiseptic, disinfectant, and precursor in plastic and pharmaceutical manufacturing. Toxic in high doses."
     },
     {
         "name": "Dexamethasone",
         "formula": "C22H29FO5",
-        "molecular_weight": "392.500",
-        "structure": "C[C@@H]1C[C@H]2[C@@H]3CCC4=CC(=O)C=C[C@@]4([C@]3([C@H](C[C@@]2([C@]1(C(=O)CO)O)C)O)F)C"
+        "molecular_weight": 392.500,
+        "structure": "C[C@@H]1C[C@H]2[C@@H]3CCC4=CC(=O)C=C[C@@]4([C@]3([C@H](C[C@@]2([C@]1(C(=O)CO)O)C)O)F)C",
+        "description": "A potent corticosteroid used to treat inflammation, allergic reactions, and autoimmune conditions. Also used for managing severe COVID-19 cases."
     },
     {
         "name": "Adenosine",
         "formula": "C10H13N5O4",
-        "molecular_weight": "267.240",
-        "structure": "C1=NC(=C2C(=N1)N(C=N2)[C@H]3[C@@H]([C@@H]([C@H](O3)CO)O)O)N"
+        "molecular_weight": 267.240,
+        "structure": "C1=NC(=C2C(=N1)N(C=N2)[C@H]3[C@@H]([C@@H]([C@H](O3)CO)O)O)N",
+        "description": "A nucleoside involved in energy transfer (ATP) and cellular signaling. Used in medicine to treat irregular heartbeats (arrhythmias) and in research for its role in biochemical reactions."
     },
     {
         "name": "Testosterone",
         "formula": "C19H28O2",
-        "molecular_weight": "288.400",
-        "structure": "C[C@]12CC[C@H]3[C@H]([C@@H]1CC[C@@H]2O)CCC4=CC(=O)CC[C@]34C"
+        "molecular_weight": 288.400,
+        "structure": "C[C@]12CC[C@H]3[C@H]([C@@H]1CC[C@@H]2O)CCC4=CC(=O)CC[C@]34C",
+        "description": "The primary male sex hormone, responsible for muscle growth, bone density, and secondary sexual characteristics. Used medically in hormone replacement therapy."
     },
     {
         "name": "Cytarabine",
         "formula": "C9H13N3O5",
-        "molecular_weight": "243.220",
-        "structure": "C1=CN(C(=O)N=C1N)[C@H]2[C@H]([C@@H]([C@H](O2)CO)O)O"
+        "molecular_weight": 243.220,
+        "structure": "C1=CN(C(=O)N=C1N)[C@H]2[C@H]([C@@H]([C@H](O2)CO)O)O",
+        "description": "A chemotherapy drug used to treat leukemia and lymphoma by interfering with DNA synthesis."
     },
     {
         "name": "Ethanol",
         "formula": "C2H6O",
-        "molecular_weight": "46.070",
-        "structure": "CCO"
+        "molecular_weight": 46.070,
+        "structure": "CCO",
+        "description": "A widely used solvent and antiseptic. Found in alcoholic beverages and used as a fuel additive."
     },
     {
         "name": "Estrone",
         "formula": "C18H22O2",
-        "molecular_weight": "270.400",
-        "structure": "C[C@]12CC[C@H]3[C@H]([C@@H]1CCC2=O)CCC4=C3C=CC(=C4)O"
+        "molecular_weight": 270.400,
+        "structure": "C[C@]12CC[C@H]3[C@H]([C@@H]1CCC2=O)CCC4=C3C=CC(=C4)O",
+        "description": "A naturally occurring estrogen hormone involved in female reproductive health. Used in hormone replacement therapy."
     },
     {
         "name": "Erythromycin",
         "formula": "C37H67NO13",
-        "molecular_weight": "733.900",
-        "structure": "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)O)(C)O"
+        "molecular_weight": 733.900,
+        "structure": "CC[C@@H]1[C@@]([C@@H]([C@H](C(=O)[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)O)(C)O",
+        "description": "A macrolide antibiotic used to treat respiratory tract infections, skin infections, and sexually transmitted diseases."
     },
     {
         "name": "Linezolid",
         "formula": "C16H20FN3O4",
-        "molecular_weight": "337.350",
-        "structure": "CC(=O)NC[C@H]1CN(C(=O)O1)C2=CC(=C(C=C2)N3CCOCC3)F"
+        "molecular_weight": 337.350,
+        "structure": "CC(=O)NC[C@H]1CN(C(=O)O1)C2=CC(=C(C=C2)N3CCOCC3)F",
+        "description": "Linezolid is an antibiotic used to treat infections caused by Gram-positive bacteria, including pneumonia and skin infections. It works by inhibiting bacterial protein synthesis."
     },
     {
         "name": "Meloxicam",
         "formula": "C14H13N3O4S2",
-        "molecular_weight": "351.400",
-        "structure": "CC1=CN=C(S1)NC(=O)C2=C(C3=CC=CC=C3S(=O)(=O)N2C)O"
+        "molecular_weight": 351.400,
+        "structure": "CC1=CN=C(S1)NC(=O)C2=C(C3=CC=CC=C3S(=O)(=O)N2C)O",
+        "description": "Meloxicam is a nonsteroidal anti-inflammatory drug (NSAID) used to relieve pain and inflammation in conditions such as arthritis. It inhibits cyclooxygenase enzymes to reduce inflammation."
     },
     {
         "name": "Paclitaxel",
         "formula": "C47H51NO14",
-        "molecular_weight": "853.900",
-        "structure": "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C"
+        "molecular_weight": 853.900,
+        "structure": "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C",
+        "description": "Paclitaxel is a chemotherapy drug used to treat various types of cancer, including breast and ovarian cancer. It stabilizes microtubules and prevents cell division."
     },
     {
         "name": "Acetylcysteine",
         "formula": "C5H9NO3S",
-        "molecular_weight": "163.200",
-        "structure": "CC(=O)N[C@@H](CS)C(=O)O"
+        "molecular_weight": 163.200,
+        "structure": "CC(=O)N[C@@H](CS)C(=O)O",
+        "description": "Acetylcysteine is a mucolytic agent used to treat respiratory conditions with excessive mucus production. It also acts as an antidote for acetaminophen overdose."
     },
     {
         "name": "Hydrochlorothiazide",
         "formula": "C7H8ClN3O4S2",
-        "molecular_weight": "297.700",
-        "structure": "C1NC2=CC(=C(C=C2S(=O)(=O)N1)S(=O)(=O)N)Cl"
+        "molecular_weight": 297.700,
+        "structure": "C1NC2=CC(=C(C=C2S(=O)(=O)N1)S(=O)(=O)N)Cl",
+        "description": "Hydrochlorothiazide is a diuretic medication used to treat high blood pressure and fluid retention. It helps the kidneys remove excess sodium and water from the body."
     },
     {
         "name": "Tylosin",
         "formula": "C46H77NO17",
-        "molecular_weight": "916.100",
-        "structure": "CC[C@@H]1[C@H](/C=C(/C=C/C(=O)[C@@H](C[C@@H]([C@@H]([C@H]([C@@H](CC(=O)O1)O)C)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C)O[C@H]3C[C@@]([C@H]([C@@H](O3)C)O)(C)O)N(C)C)O)CC=O)C)\\C)CO[C@H]4[C@@H]([C@@H]([C@@H]([C@H](O4)C)O)OC)OC"
+        "molecular_weight": 916.100,
+        "structure": "CC[C@@H]1[C@H](/C=C(/C=C/C(=O)[C@@H](C[C@@H]([C@@H]([C@H]([C@@H](CC(=O)O1)O)C)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C)O[C@H]3C[C@@]([C@H]([C@@H](O3)C)O)(C)O)N(C)C)O)CC=O)C)\\C)CO[C@H]4[C@@H]([C@@H]([C@@H]([C@H](O4)C)O)OC)OC",
+        "description": "Tylosin is a macrolide antibiotic primarily used in veterinary medicine to treat bacterial infections in livestock and poultry."
     },
     {
         "name": "Lincomycin",
         "formula": "C18H34N2O6S",
-        "molecular_weight": "406.500",
-        "structure": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)[C@@H](C)O"
+        "molecular_weight": 406.500,
+        "structure": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)O)O)O)[C@@H](C)O",
+        "description": "Lincomycin is an antibiotic used to treat severe bacterial infections, particularly those caused by Gram-positive bacteria. It inhibits bacterial protein synthesis."
     },
     {
         "name": "Spectinomycin",
         "formula": "C14H24N2O7",
-        "molecular_weight": "332.350",
-        "structure": "C[C@@H]1CC(=O)[C@]2([C@@H](O1)O[C@@H]3[C@H]([C@@H]([C@@H]([C@@H]([C@H]3O2)NC)O)NC)O)O"
+        "molecular_weight": 332.350,
+        "structure": "C[C@@H]1CC(=O)[C@]2([C@@H](O1)O[C@@H]3[C@H]([C@@H]([C@@H]([C@@H]([C@H]3O2)NC)O)NC)O)O",
+        "description": "Spectinomycin is an antibiotic used to treat gonorrhea infections. It works by inhibiting bacterial protein synthesis."
     },
     {
         "name": "Ethylenediamine",
         "formula": "C2H8N2",
-        "molecular_weight": "60.100",
-        "structure": "C(CN)N"
+        "molecular_weight": 60.100,
+        "structure": "C(CN)N",
+        "description": "Ethylenediamine is an organic compound used as a building block in the synthesis of many industrial chemicals, including pharmaceuticals and agrochemicals."
     },
     {
         "name": "Bortezomib",
         "formula": "C19H25BN4O4",
-        "molecular_weight": "384.200",
-        "structure": "B([C@H](CC(C)C)NC(=O)[C@H](CC1=CC=CC=C1)NC(=O)C2=NC=CN=C2)(O)O"
+        "molecular_weight": 384.200,
+        "structure": "B([C@H](CC(C)C)NC(=O)[C@H](CC1=CC=CC=C1)NC(=O)C2=NC=CN=C2)(O)O",
+        "description": "Bortezomib is a proteasome inhibitor used in the treatment of multiple myeloma and mantle cell lymphoma. It disrupts protein degradation pathways in cancer cells."
     },
     {
         "name": "Ondansetron",
         "formula": "C18H19N3O",
-        "molecular_weight": "293.400",
-        "structure": "CC1=NC=CN1CC2CCC3=C(C2=O)C4=CC=CC=C4N3C"
+        "molecular_weight": 293.400,
+        "structure": "CC1=NC=CN1CC2CCC3=C(C2=O)C4=CC=CC=C4N3C",
+        "description": "Ondansetron is an antiemetic medication used to prevent nausea and vomiting caused by chemotherapy, radiation therapy, or surgery. It works by blocking serotonin receptors in the brain."
     },
     {
         "name": "Streptomycin Sulfate",
         "formula": "C42H84N14O36S3",
-        "molecular_weight": "1457.400",
-        "structure": "C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O.C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O.OS(=O)(=O)O.OS(=O)(=O)O.OS(=O)(=O)O"
+        "molecular_weight": 1457.400,
+        "structure": "C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O.C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O.OS(=O)(=O)O.OS(=O)(=O)O.OS(=O)(=O)O",
+        "description": "Streptomycin sulfate is an aminoglycoside antibiotic used to treat bacterial infections, including tuberculosis and plague. It works by inhibiting protein synthesis in bacteria."
+
     },
     {
         "name": "Oxytetracycline hydrochloride",
         "formula": "C22H25ClN2O9",
-        "molecular_weight": "496.900",
-        "structure": "C[C@@]1([C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O)O.Cl"
+        "molecular_weight": 496.900,
+        "structure": "C[C@@]1([C@H]2[C@@H]([C@H]3[C@@H](C(=O)C(=C([C@]3(C(=O)C2=C(C4=C1C=CC=C4O)O)O)O)C(=O)N)N(C)C)O)O.Cl",
+        "description": "Oxytetracycline is a broad-spectrum antibiotic used to treat bacterial infections in humans and animals. It works by inhibiting bacterial protein synthesis."
     },
     {
         "name": "Propofol",
         "formula": "C12H18O",
-        "molecular_weight": "178.270",
-        "structure": "CC(C)C1=C(C(=CC=C1)C(C)C)O"
+        "molecular_weight": 178.270,
+        "structure": "CC(C)C1=C(C(=CC=C1)C(C)C)O",
+        "description": "Propofol is a short-acting intravenous anesthetic used for induction and maintenance of general anesthesia. It is also used for sedation in intensive care settings."
     },
     {
         "name": "Diazoxide",
         "formula": "C8H7ClN2O2S",
-        "molecular_weight": "230.670",
-        "structure": "CC1=NS(=O)(=O)C2=C(N1)C=CC(=C2)Cl"
+        "molecular_weight": 230.670,
+        "structure": "CC1=NS(=O)(=O)C2=C(N1)C=CC(=C2)Cl",
+        "description": "Diazoxide is a vasodilator used to treat acute hypertension and hypoglycemia in patients with insulinoma. It works by relaxing blood vessels and reducing insulin secretion."
     },
     {
         "name": "Nitroglycerin",
         "formula": "C3H5N3O9",
-        "molecular_weight": "227.090",
-        "structure": "C(C(CO[N+](=O)[O-])O[N+](=O)[O-])O[N+](=O)[O-]"
+        "molecular_weight": 227.090,
+        "structure": "C(C(CO[N+](=O)[O-])O[N+](=O)[O-])O[N+](=O)[O-]",
+        "description": "Nitroglycerin is a nitrate medication used to treat angina (chest pain) and heart failure. It works by dilating blood vessels to improve blood flow."
     },
     {
         "name": "Midazolam",
         "formula": "C18H13ClFN3",
-        "molecular_weight": "325.800",
-        "structure": "CC1=NC=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4F"
+        "molecular_weight": 325.800,
+        "structure": "CC1=NC=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4F",
+        "description": "Midazolam is a benzodiazepine used for sedation, anesthesia, and seizure control. It enhances the effects of GABA in the brain, promoting relaxation and sleep."
     },
     {
         "name": "Etomidate",
         "formula": "C14H16N2O2",
-        "molecular_weight": "244.290",
-        "structure": "CCOC(=O)C1=CN=CN1[C@H](C)C2=CC=CC=C2"
+        "molecular_weight": 244.290,
+        "structure": "CCOC(=O)C1=CN=CN1[C@H](C)C2=CC=CC=C2",
+        "description": "Etomidate is an intravenous anesthetic used for short surgical procedures. It provides rapid induction of anesthesia with minimal cardiovascular effects."
     },
     {
         "name": "Pemetrexed",
         "formula": "C20H21N5O6",
-        "molecular_weight": "427.400",
-        "structure": "C1=CC(=CC=C1CCC2=CNC3=C2C(=O)NC(=N3)N)C(=O)N[C@@H](CCC(=O)O)C(=O)O"
+        "molecular_weight": 427.400,
+        "structure": "C1=CC(=CC=C1CCC2=CNC3=C2C(=O)NC(=N3)N)C(=O)N[C@@H](CCC(=O)O)C(=O)O",
+        "description": "Pemetrexed is a chemotherapy drug used to treat non-small cell lung cancer and mesothelioma. It inhibits folate metabolism, preventing cancer cell growth."
     },
     {
         "name": "Polidocanol",
         "formula": "C30H62O10",
-        "molecular_weight": "582.800",
-        "structure": "CCCCCCCCCCCCOCCOCCOCCOCCOCCOCCOCCOCCOCCO"
+        "molecular_weight": 582.800,
+        "structure": "CCCCCCCCCCCCOCCOCCOCCOCCOCCOCCOCCOCCOCCO",
+        "description": "Polidocanol is a sclerosing agent used in treating varicose veins and spider veins. It works by irritating blood vessel linings, causing them to collapse."
     },
     {
         "name": "Florfenicol",
         "formula": "C12H14Cl2FNO4S",
-        "molecular_weight": "358.200",
-        "structure": "CS(=O)(=O)C1=CC=C(C=C1)[C@H]([C@@H](CF)NC(=O)C(Cl)Cl)O"
+        "molecular_weight": 358.200,
+        "structure": "CS(=O)(=O)C1=CC=C(C=C1)[C@H]([C@@H](CF)NC(=O)C(Cl)Cl)O",
+        "description": "Florfenicol is a veterinary antibiotic used to treat bacterial infections in livestock. It is a fluorinated analog of chloramphenicol."
     },
     {
         "name": "Water",
         "formula": "H2O",
-        "molecular_weight": "18.015",
-        "structure": "O"
+        "molecular_weight": 18.015,
+        "structure": "O",
+        "description": "Water is a universal solvent essential for life. It is used in pharmaceuticals, laboratories, and medical treatments."
     },
     {
         "name": "Perflutren",
         "formula": "C3F8",
-        "molecular_weight": "188.020",
-        "structure": "C(C(F)(F)F)(C(F)(F)F)(F)F"
+        "molecular_weight": 188.020,
+        "structure": "C(C(F)(F)F)(C(F)(F)F)(F)F",
+        "description": "Perflutren is a fluorocarbon gas used in ultrasound contrast agents to improve imaging of blood flow."
     },
     {
         "name": "Daptomycin",
         "formula": "C72H101N17O26",
-        "molecular_weight": "1620.700",
-        "structure": "CCCCCCCCCC(=O)N[C@@H](CC1=CNC2=CC=CC=C21)C(=O)N[C@H](CC(=O)N)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@H]3[C@H](OC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@H](NC(=O)CNC(=O)[C@@H](NC(=O)[C@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)CNC3=O)CCCN)CC(=O)O)C)CC(=O)O)CO)[C@H](C)CC(=O)O)CC(=O)C4=CC=CC=C4N)C"
+        "molecular_weight": 1620.700,
+        "structure": "CCCCCCCCCC(=O)N[C@@H](CC1=CNC2=CC=CC=C21)C(=O)N[C@H](CC(=O)N)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@H]3[C@H](OC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@H](NC(=O)CNC(=O)[C@@H](NC(=O)[C@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)CNC3=O)CCCN)CC(=O)O)C)CC(=O)O)CO)[C@H](C)CC(=O)O)CC(=O)C4=CC=CC=C4N)C",
+        "description": "Daptomycin is an antibiotic used to treat serious bacterial infections, particularly those caused by Gram-positive bacteria, including MRSA."
     },
     {
         "name": "Clindamycin Phosphate",
         "formula": "C18H34ClN2O8PS",
-        "molecular_weight": "505.000",
-        "structure": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)OP(=O)(O)O)O)O)[C@H](C)Cl"
+        "molecular_weight": 505.000,
+        "structure": "CCC[C@@H]1C[C@H](N(C1)C)C(=O)N[C@@H]([C@@H]2[C@@H]([C@@H]([C@H]([C@H](O2)SC)OP(=O)(O)O)O)O)[C@H](C)Cl",
+        "description": "Clindamycin phosphate is a prodrug of clindamycin, used to treat bacterial infections, including skin infections and acne."
     },
     {
         "name": "Tylosin Tartrate",
         "formula": "C50H83NO23",
-        "molecular_weight": "1066.200",
-        "structure": "CC[C@@H]1[C@H](/C=C(/C=C/C(=O)[C@@H](C[C@@H]([C@@H]([C@H]([C@@H](CC(=O)O1)O)C)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C)O[C@H]3C[C@@]([C@H]([C@@H](O3)C)O)(C)O)N(C)C)O)CC=O)C)\\C)CO[C@H]4[C@@H]([C@@H]([C@@H]([C@H](O4)C)O)OC)OC.[C@@H]([C@H](C(=O)O)O)(C(=O)O)O"
+        "molecular_weight": 1066.200,
+        "structure": "CC[C@@H]1[C@H](/C=C(/C=C/C(=O)[C@@H](C[C@@H]([C@@H]([C@H]([C@@H](CC(=O)O1)O)C)O[C@H]2[C@@H]([C@H]([C@@H]([C@H](O2)C)O[C@H]3C[C@@]([C@H]([C@@H](O3)C)O)(C)O)N(C)C)O)CC=O)C)\\C)CO[C@H]4[C@@H]([C@@H]([C@@H]([C@H](O4)C)O)OC)OC.[C@@H]([C@H](C(=O)O)O)(C(=O)O)O",
+        "description": "Tylosin is a macrolide antibiotic used in veterinary medicine to treat bacterial infections in livestock."
     },
     {
         "name": "Humulin N",
         "formula": "C257H383N65O77S6",
-        "molecular_weight": "5808.000",
-        "structure": "CC[C@H](C)[C@H]1C(=O)N[C@H]2CSSC[C@@H](C(=O)N[C@@H](CSSC[C@@H](C(=O)NCC(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@@H](CSSC[C@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC2=O)CO)CC(C)C)CC3=CC=C(C=C3)O)CCC(=O)N)CC(C)C)CCC(=O)O)CC(=O)N)CC4=CC=C(C=C4)O)C(=O)N[C@@H](CC(=O)N)C(=O)O)C(=O)NCC(=O)N[C@@H](CCC(=O)O)C(=O)N[C@@H](CCCNC(=N)N)C(=O)NCC(=O)N[C@@H](CC5=CC=CC=C5)C(=O)N[C@@H](CC6=CC=CC=C6)C(=O)N[C@@H](CC7=CC=C(C=C7)O)C(=O)N[C@@H]([C@@H](C)O)C(=O)N8CCC[C@H]8C(=O)N[C@@H](CCCCN)C(=O)N[C@@H]([C@@H](C)O)C(=O)O)C(C)C)CC(C)C)CC9=CC=C(C=C9)O)CC(C)C)C)CCC(=O)O)C(C)C)CC(C)C)CC2=CNC=N2)CO)NC(=O)[C@H](CC(C)C)NC(=O)[C@H](CC2=CNC=N2)NC(=O)[C@H](CCC(=O)N)NC(=O)[C@H](CC(=O)N)NC(=O)[C@H](C(C)C)NC(=O)[C@H](CC2=CC=CC=C2)N)C(=O)N[C@H](C(=O)N[C@H](C(=O)N1)CO)[C@@H](C)O)NC(=O)[C@H](CCC(=O)N)NC(=O)[C@H](CCC(=O)O)NC(=O)[C@H](C(C)C)NC(=O)[C@H]([C@@H](C)CC)NC(=O)CN"
+        "molecular_weight": 5808.000,
+        "structure": "CC[C@H](C)[C@H]1C(=O)N[C@H]2CSSC[C@@H](C(=O)N[C@@H](CSSC[C@@H](C(=O)NCC(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@@H](CSSC[C@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC(=O)[C@@H](NC2=O)CO)CC(C)C)CC3=CC=C(C=C3)O)CCC(=O)N)CC(C)C)CCC(=O)O)CC(=O)N)CC4=CC=C(C=C4)O)C(=O)N[C@@H](CC(=O)N)C(=O)O)C(=O)NCC(=O)N[C@@H](CCC(=O)O)C(=O)N[C@@H](CCCNC(=N)N)C(=O)NCC(=O)N[C@@H](CC5=CC=CC=C5)C(=O)N[C@@H](CC6=CC=CC=C6)C(=O)N[C@@H](CC7=CC=C(C=C7)O)C(=O)N[C@@H]([C@@H](C)O)C(=O)N8CCC[C@H]8C(=O)N[C@@H](CCCCN)C(=O)N[C@@H]([C@@H](C)O)C(=O)O)C(C)C)CC(C)C)CC9=CC=C(C=C9)O)CC(C)C)C)CCC(=O)O)C(C)C)CC(C)C)CC2=CNC=N2)CO)NC(=O)[C@H](CC(C)C)NC(=O)[C@H](CC2=CNC=N2)NC(=O)[C@H](CCC(=O)N)NC(=O)[C@H](CC(=O)N)NC(=O)[C@H](C(C)C)NC(=O)[C@H](CC2=CC=CC=C2)N)C(=O)N[C@H](C(=O)N[C@H](C(=O)N1)CO)[C@@H](C)O)NC(=O)[C@H](CCC(=O)N)NC(=O)[C@H](CCC(=O)O)NC(=O)[C@H](C(C)C)NC(=O)[C@H]([C@@H](C)CC)NC(=O)CN",
+        "description": "Humulin N is an intermediate-acting insulin used to treat diabetes mellitus by controlling blood sugar levels."
     },
     {
         "name": "Tulathromycin",
         "formula": "C41H79N3O12",
-        "molecular_weight": "806.100",
-        "structure": "CCCNC[C@@]1([C@@H](O[C@H](C[C@@]1(C)OC)O[C@H]2[C@@H]([C@H]([C@](C[C@H](CN[C@@H]([C@H]([C@]([C@H](OC(=O)[C@@H]2C)CC)(C)O)O)C)C)(C)O)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)C)C)O"
+        "molecular_weight": 806.100,
+        "structure": "CCCNC[C@@]1([C@@H](O[C@H](C[C@@]1(C)OC)O[C@H]2[C@@H]([C@H]([C@](C[C@H](CN[C@@H]([C@H]([C@]([C@H](OC(=O)[C@@H]2C)CC)(C)O)O)C)C)(C)O)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)C)C)O",
+        "description": "Tulathromycin is a macrolide antibiotic used in veterinary medicine to treat respiratory infections in cattle and swine."
     }
 ]

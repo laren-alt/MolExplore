@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Chemistry Quiz | MolExplore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center">
+            <h2>Chemistry Quiz</h2>
+            <p class="mb-0">Test your knowledge of chemical nomenclature!</p>
+        </div>
+        <div class="card-body text-center">
+            <h5 class="mb-3">What is the name of this molecule?</h5>
+            
+            <!-- 2D or 3D Visualization -->
+            <div id="quiz-structure" class="border rounded p-3 mb-4" style="min-height: 300px;"></div>
+
+            <!-- Answer Form -->
+            <form id="quizForm">
+                <input type="hidden" id="molecule-id" value="{{ molecule._id }}">
+                
+                {% if quiz_type == "multiple_choice" %}
+                    {% for option in options %}
+                        <button type="button" class="btn btn-outline-primary btn-block answer-option" data-answer="{{ option }}">
+                            {{ option }}
+                        </button>
+                    {% endfor %}
+                {% else %}
+                    <input type="text" id="user-answer" class="form-control mb-3" placeholder="Enter name or formula">
+                    <button type="button" class="btn btn-success" id="submit-answer">Submit</button>
+                {% endif %}
+            </form>
+
+            <!-- Feedback -->
+            <div id="quiz-feedback" class="mt-3"></div>
+
+            <!-- Next Question Button -->
+            <button class="btn btn-info mt-3 d-none" id="next-question">Next Question</button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
+<script src="{{ url_for('static', filename='js/3Dmol.js') }}"></script>
+
+<script>
+    // Get CSRF token from meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr("content");
+    document.addEventListener("DOMContentLoaded", function () {
+        window.initRDKitModule().then(function (RDKit) {
+            const molData = "{{ molecule.structure }}";
+            const molDiv = document.getElementById("quiz-structure");
+            const mol2D = RDKit.get_mol(molData);
+            if (mol2D) {
+                molDiv.innerHTML = mol2D.get_svg();
+            } else {
+                molDiv.innerHTML = "<p class='text-danger'>Failed to render structure.</p>";
+            }
+        });
+
+        // Handle Multiple Choice Answer
+        $(".answer-option").on("click", function () {
+            let userAnswer = $(this).data("answer");
+            checkAnswer(userAnswer);
+        });
+
+        // Handle Free Text Answer
+        $("#submit-answer").on("click", function () {
+            let userAnswer = $("#user-answer").val().trim();
+            if (userAnswer !== "") checkAnswer(userAnswer);
+        });
+
+        // AJAX Check Answer
+        function checkAnswer(answer) {
+            let moleculeId = $("#molecule-id").val();
+            $.ajax({
+                url: "/quiz/check-answer",
+                type: "POST",
+                headers: { "X-CSRFToken": csrfToken }, 
+                contentType: "application/json",
+                data: JSON.stringify({ molecule_id: moleculeId, user_answer: answer }),
+                success: function (response) {
+                    $("#quiz-feedback").html(
+                        `<p class="text-${response.correct ? 'success' : 'danger'}">${response.message}</p>`
+                    );
+                    if (response.correct) {
+                        $("#next-question").removeClass("d-none");
+                    }
+                }
+            });
+        }
+
+        // Load Next Question
+        $("#next-question").on("click", function () {
+            window.location.reload();
+        });
+    });
+</script>
+{% endblock %}

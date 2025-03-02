@@ -1,19 +1,32 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, abort
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, abort, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
-from .models import get_user_collection, get_molecule_collection
-from .forms import MoleculeForm, LoginForm, ReactionForm
-from .utils import find_similar_molecules, calculate_bond_count, get_atom_types, handle_small_molecule, parse_formula
 from rdkit import Chem
 import json
-import re
+import os
+import random
+from math import ceil
 from collections import Counter
 from datetime import datetime
-from sympy import symbols, Eq, solve
+
+from .models import get_user_collection, get_molecule_collection, get_comment_collection
+from .forms import MoleculeForm, LoginForm, ReactionForm
+from .utils import (
+    find_similar_molecules,
+    calculate_bond_count,
+    get_atom_types,
+    handle_small_molecule,
+    parse_formula,
+    parse_reaction,       # Matrix-based parsing
+    get_oxidation_state,  # Used for product prediction
+    predict_product,      # Uses oxidation states
+    balance_reaction      # Matrix-based balancing
+)
+
 
 main = Blueprint("main", __name__)
 
-# Seed admin user (can be called manually or on app startup)
+# Seed admin user (runs once during app setup)
 def seed_admin_user():
     user_collection = get_user_collection()
     if not user_collection.find_one({"username": "admin"}):
@@ -28,24 +41,75 @@ def seed_admin_user():
         user_collection.insert_one(admin_user)
         print("Admin user created with username: 'admin' and password: 'admin123'")
 
-# Uncomment to run seed function only once during the app setup
+# Seed molecule data from molecules.json if the database is empty
+def seed_molecule_data():
+    molecule_collection = get_molecule_collection()
+    
+    # Check if the database is empty
+    if molecule_collection.count_documents({}) == 0:
+        json_file_path = "molecules.json"
+
+        # Ensure file exists
+        if os.path.exists(json_file_path):
+            with open(json_file_path, "r") as file:
+                molecules = json.load(file)
+            
+            for molecule in molecules:
+                molecule["createdAt"] = datetime.utcnow()
+                molecule["updatedAt"] = datetime.utcnow()
+                molecule_collection.insert_one(molecule)
+
+            print(f"Seeded {len(molecules)} molecules from molecules.json into the database.")
+        else:
+            print("molecules.json not found. No data seeded.")
+
+# Call seeding functions
 seed_admin_user()
+seed_molecule_data()
 
 @main.route("/")
 def home():
-    # Load JSON data
-    json_file_path = "molecules.json"
-    with open(json_file_path, "r") as file:
-        molecule_data = json.load(file)
+    # Get the current page number and search query from the URL parameters
+    page = request.args.get('page', 1, type=int)  # Get the current page number from the query string
+    search_query = request.args.get('search', '', type=str)  # Get the search query from the query string
+    per_page = 12  # Define how many molecules per page
+
+    molecule_collection = get_molecule_collection()
+
+    # Construct the search filter
+    search_filter = {}
+    if search_query:
+        search_filter = {
+            "$or": [
+                {"name": {"$regex": search_query, "$options": "i"}},
+                {"formula": {"$regex": search_query, "$options": "i"}},
+                {"molecular_weight": {"$regex": search_query, "$options": "i"}}
+            ]
+        }
+
+    # Fetch paginated molecules based on search filter
+    molecule_data = list(molecule_collection.find(search_filter, {"_id": 0})
+                         .skip((page - 1) * per_page).limit(per_page))
+
+    # Get the total number of filtered molecules to calculate the number of pages
+    total_molecules = molecule_collection.count_documents(search_filter)
+    total_pages = ceil(total_molecules / per_page)
 
     # Generate 2D molecule images for each structure
     for molecule in molecule_data:
-        smiles = molecule["structure"]
+        smiles = molecule.get("structure", "")
         mol = Chem.MolFromSmiles(smiles)
         if mol:
-            molecule["mol_block"] = Chem.MolToMolBlock(mol) 
+            molecule["mol_block"] = Chem.MolToMolBlock(mol)
 
-    return render_template("home.html", molecule_data=molecule_data)
+    return render_template(
+        "home.html", 
+        molecule_data=molecule_data, 
+        total_pages=total_pages, 
+        current_page=page,
+        search_query=search_query  # Pass the search query back to the template
+    )
+
 
 @main.route("/gallery")
 def gallery():
@@ -53,10 +117,26 @@ def gallery():
     query = {}
     search = request.args.get("search", "")
     sort_by = request.args.get("sort_by", "name")
-    min_weight = request.args.get("min_weight", type=float, default=None)
-    max_weight = request.args.get("max_weight", type=float, default=None)
+    min_weight = request.args.get("min_weight", type=str, default=None)
+    max_weight = request.args.get("max_weight", type=str, default=None)
     page = request.args.get("page", type=int, default=1)
     per_page = 8
+
+    # Convert min_weight and max_weight safely
+    try:
+        min_weight = float(min_weight) if min_weight and min_weight.strip() else None
+    except ValueError:
+        min_weight = None
+    
+    try:
+        max_weight = float(max_weight) if max_weight and max_weight.strip() else None
+    except ValueError:
+        max_weight = None
+
+    # Validate: min_weight should not be greater than max_weight
+    if min_weight is not None and max_weight is not None and min_weight > max_weight:
+        flash("Minimum weight cannot be greater than maximum weight.", "danger")
+        return redirect(url_for("main.gallery"))
 
     # Search by name
     if search:
@@ -104,105 +184,64 @@ def gallery():
 
 @main.route("/details/<molecule_id>", methods=["GET", "POST"])
 def details(molecule_id):
-    form = ReactionForm()  # Initialize the form
-    reaction_result = None  # Initialize reaction result
+    form = ReactionForm()
 
     try:
-        # Get the molecule collection
         molecule_collection = get_molecule_collection()
-        
-        # Fetch the target molecule
         molecule = molecule_collection.find_one({"_id": ObjectId(molecule_id)})
+
         if not molecule:
             flash("Molecule not found.", "danger")
             return redirect(url_for("main.gallery"))
 
-        # Add bond count and atom types
+        # Calculate any additional info you need
         molecule["bond_count"] = calculate_bond_count(molecule["structure"])
         molecule["atom_types"] = get_atom_types(molecule["structure"])
 
-        # Fetch all molecules for similarity search
-        all_molecules = list(molecule_collection.find({}, {"_id": 1,"name": 1, "structure": 1}))
-        similar_molecules = find_similar_molecules(molecule["structure"], all_molecules)
+        # Find similar molecules
+        all_molecules = list(molecule_collection.find({}, {"_id": 1, "name": 1, "structure": 1, "formula": 1}))
+        similar_molecules = find_similar_molecules(molecule["structure"], all_molecules, str(molecule["_id"]))
 
-        # Handle chemical reaction simulation if form is submitted
-        if request.method == "POST" and form.validate_on_submit():
-            reaction_input = form.reaction.data.strip()  # Remove extra spaces
-
-            if not reaction_input:
-                flash("Please enter a valid reaction.", "warning")
-                return redirect(url_for("main.details", molecule_id=molecule_id))
-
-            # Ensure the reaction input has the right format (reactants -> products)
-            if "->" not in reaction_input:
-                flash("Invalid reaction format. Make sure the reaction has '->'.", "warning")
-                return redirect(url_for("main.details", molecule_id=molecule_id))
-
-            # Parse the reaction input
-            try:
-                reactants, products = reaction_input.split("->")
-                reactants = [x.strip() for x in reactants.split("+")]
-                products = [x.strip() for x in products.split("+")]
-            except ValueError:
-                flash("Invalid reaction format. Make sure to separate reactants and products with '->'.", "warning")
-                return redirect(url_for("main.details", molecule_id=molecule_id))
-
-            # Handle small molecule names (e.g., H2 -> H2)
-            reactants = [handle_small_molecule(r) for r in reactants]
-            products = [handle_small_molecule(p) for p in products]
-
-            # Create variables for each compound
-            try:
-                variables = {compound: symbols(compound, integer=True) for compound in reactants + products}
-            except Exception as e:
-                flash(f"Error in creating symbols: {str(e)}", "danger")
-                return redirect(url_for("main.details", molecule_id=molecule_id))
-
-            # Debug: Print variables to ensure correct symbol creation
-            print("Variables:", variables)
-
-            # Create equations based on conservation of elements
-            element_counts = {}
-            for compound in variables:
-                mol = handle_small_molecule(compound)  # Use the handle_small_molecule function
-                if mol is None:
-                    flash(f"Invalid molecule in reaction: {compound}", "danger")
-                    return redirect(url_for("main.details", molecule_id=molecule_id))
-
-                # Count elements in the molecule
-                for atom in mol.GetAtoms():
-                    element = atom.GetSymbol()
-                    count = atom.GetTotalNumHs() + atom.GetNumImplicitHs() + 1  # Includes implicit Hs
-                    element_counts.setdefault(element, []).append((variables[compound], count))
-
-            # Build equations
-            equations = []
-            for element, compounds in element_counts.items():
-                equations.append(Eq(sum(c * coeff for c, coeff in compounds[:len(reactants)]),
-                                    sum(c * coeff for c, coeff in compounds[len(reactants):])))
-            print(equations, "--------------")
-            # Solve the system of equations
-            solution = solve(equations, list(variables.values()), dict=True)
-            if not solution:
-                flash("Unable to balance the reaction.", "danger")
-                return redirect(url_for("main.details", molecule_id=molecule_id))
-
-            # Generate balanced reaction string
-            balanced_reactants = " + ".join(f"{solution[var]} {var.name}" for var in variables.values()[:len(reactants)])
-            balanced_products = " + ".join(f"{solution[var]} {var.name}" for var in variables.values()[len(reactants):])
-            reaction_result = f"{balanced_reactants} -> {balanced_products}"
+        # Fetch recent comments
+        comments = list(
+            get_comment_collection()
+            .find({"molecule_id": ObjectId(molecule_id)})
+            .sort("timestamp", -1)
+            .limit(10)
+        )
+        for comment in comments:
+            comment["_id"] = str(comment["_id"])
 
         return render_template(
             "details.html",
             molecule=molecule,
             similar_molecules=similar_molecules,
-            reaction_result=reaction_result,
-            form=form  # Pass the form to the template
+            form=form,
+            comments=comments,
+            user_role=session.get("role")
         )
+
     except Exception as e:
+        print("Error in details route:", e)
         flash(f"An error occurred: {e}", "danger")
         return redirect(url_for("main.gallery"))
-    
+
+
+@main.route('/comment/unfavorite/<comment_id>', methods=['POST'])
+def unfavorite_comment(comment_id):
+    comment = get_comment_collection().find_one({"_id": ObjectId(comment_id)})
+    if not comment:
+        return jsonify({"success": False, "message": "Comment not found"}), 404
+
+    new_favorite_count = max(0, comment.get("favorite_count", 0) - 1)
+    get_comment_collection().update_one(
+        {"_id": ObjectId(comment_id)},
+        {"$set": {"favorite_count": new_favorite_count}}
+    )
+
+    return jsonify({"success": True, "new_favorite_count": new_favorite_count})
+
+
 @main.route("/admin/molecule/details/<molecule_id>")
 def molecule_details(molecule_id):
     try:
@@ -220,7 +259,9 @@ def molecule_details(molecule_id):
 
         # Fetch all molecules for similarity search
         molecule_collection = list(get_molecule_collection().find({}, {"name": 1, "formula": 1, "structure": 1}))
-        similar_molecules = find_similar_molecules(structure, molecule_collection)
+        similar_molecules = find_similar_molecules(molecule["structure"], molecule_collection, str(molecule["_id"]))
+
+        
         return render_template(
             "molecule_details.html",
             molecule=molecule,
@@ -243,6 +284,7 @@ def stats():
         molecule["_id"] = str(molecule["_id"])
         formula = molecule.get("formula", "")
         parsed_elements = parse_formula(formula)
+        molecule['molecular_weight'] = float(molecule['molecular_weight'])
         molecule["parsed_formula"] = dict(parsed_elements)  # Add parsed formula to each molecule
         element_distribution.update(parsed_elements)
 
@@ -277,8 +319,6 @@ def stats():
         scatter_data=scatter_data,
         most_common_element=most_common_element,
     )
-
-
 
 @main.route("/molecule/<molecule_name>")
 def molecule_detail(molecule_name):
@@ -342,8 +382,9 @@ def create_molecule():
         data = {
             "name": form.name.data,
             "formula": form.formula.data,
-            "molecular_weight": form.molecular_weight.data,
+            "molecular_weight": float(form.molecular_weight.data),
             "structure": form.structure.data,
+            "description": form.description.data,
         }
         molecule_collection.insert_one(data)
         flash("Molecule added successfully!", "success")
@@ -371,8 +412,9 @@ def update_molecule(molecule_id):
         updated_data = {
             "name": form.name.data,
             "formula": form.formula.data,
-            "molecular_weight": form.molecular_weight.data,
+            "molecular_weight": float(form.molecular_weight.data),
             "structure": form.structure.data,
+            "description": form.description.data,
         }
         molecule_collection.update_one({"_id": ObjectId(molecule_id)}, {"$set": updated_data})
         flash("Molecule updated successfully!", "success")
@@ -402,6 +444,8 @@ def login():
         user = user_collection.find_one({"username": form.username.data})
         if user and check_password_hash(user["password"], form.password.data):
             session["user"] = user["username"]
+            session["role"] = user["role"]
+            session["user_id"] = str(user["_id"])
             flash("Login successful!", "success")
             return redirect(url_for("main.admin"))
         flash("Invalid username or password.", "danger")
@@ -412,3 +456,147 @@ def logout():
     session.pop("user", None)
     flash("Logged out successfully.", "success")
     return redirect(url_for("main.home"))
+
+@main.route("/details/<molecule_id>/add_comment", methods=["POST"])
+def add_comment(molecule_id):
+    comment_text = request.json.get("comment_text")
+    commenter_name = request.json.get("commenter_name", "Anonymous").strip()
+    if not commenter_name:
+        return jsonify({"success": False, "message": "Commenter Name cannot be empty."}), 400
+    
+    if not comment_text:
+        return jsonify({"success": False, "message": "Comment cannot be empty."}), 400
+
+    comment_data = {
+        "molecule_id": ObjectId(molecule_id),
+        "user_id": session.get("user_id") if session.get("role") == "admin" else None,
+        "text": comment_text,
+        "commenter_name": commenter_name,
+        "timestamp": datetime.utcnow(),
+    }
+    comment_collection = get_comment_collection()
+    inserted_comment = comment_collection.insert_one(comment_data)
+
+    # Convert MongoDB ObjectId to string for JSON response
+    comment_data["_id"] = str(inserted_comment.inserted_id)
+
+    return jsonify({
+        "success": True,
+        "message": "Comment added successfully!",
+        "comment": {
+            "id": comment_data["_id"],
+            "molecule_id": str(comment_data["molecule_id"]),
+            "user_id": str(comment_data["user_id"]) if comment_data["user_id"] else None,
+            "text": comment_data["text"],
+            "timestamp": comment_data["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
+        }
+    })
+
+
+@main.route("/comment/delete/<comment_id>", methods=["POST"])
+def delete_comment(comment_id):
+    """Delete a comment (admin or owner only) via AJAX."""
+    if not session.get("user"):
+        return jsonify({"success": False, "message": "You need to log in to delete a comment."}), 403
+
+    comment = get_comment_collection().find_one({"_id": ObjectId(comment_id)})
+    if not comment:
+        return jsonify({"success": False, "message": "Comment not found."}), 404
+
+    if session.get("role") == "admin" or session.get("user_id") == comment["user_id"]:
+        get_comment_collection().delete_one({"_id": ObjectId(comment_id)})
+        return jsonify({"success": True, "message": "Comment deleted successfully!"})
+    else:
+        return jsonify({"success": False, "message": "You don't have permission to delete this comment."}), 403
+    
+@main.route('/comment/favorite/<comment_id>', methods=['POST'])
+def favorite_comment(comment_id):
+    comment = get_comment_collection().find_one({"_id": ObjectId(comment_id)})
+
+    if not comment:
+        return jsonify({"success": False, "message": "Comment not found"}), 404
+
+    # Increase favorite count by 1
+    new_favorite_count = comment.get("favorite_count", 0) + 1
+
+    get_comment_collection().update_one(
+        {"_id": ObjectId(comment_id)},
+        {"$set": {"favorite_count": new_favorite_count}}
+    )
+
+    return jsonify({"success": True, "new_favorite_count": new_favorite_count})
+
+
+@main.route("/quiz")
+def chemistry_quiz():
+    """Render the quiz page with a random molecule."""
+    molecule = get_molecule_collection().aggregate([{"$sample": {"size": 1}}]).next()
+    # Determine quiz type (Multiple Choice or Text Input)
+    quiz_type = random.choice(["multiple_choice", "text"])
+    print(quiz_type, "----")
+    # Generate answer choices for multiple choice
+    options = []
+    if quiz_type == "multiple_choice":
+        options = [molecule["name"]]
+        other_molecules = list(get_molecule_collection().aggregate([{"$sample": {"size": 3}}]))
+        options += [m["name"] for m in other_molecules]
+        random.shuffle(options)
+
+    return render_template("quiz.html", molecule=molecule, quiz_type=quiz_type, options=options)
+
+@main.route("/quiz/check-answer", methods=["POST"])
+def check_quiz_answer():
+    """Validate the user's answer."""
+    data = request.json
+    molecule_id = data.get("molecule_id")
+    user_answer = data.get("user_answer", "").strip().lower()
+
+    molecule = get_molecule_collection().find_one({"_id": ObjectId(molecule_id)})
+    if not molecule:
+        return jsonify({"success": False, "message": "Molecule not found."})
+
+    correct_answer = molecule["name"].strip().lower()
+    is_correct = user_answer == correct_answer
+
+    return jsonify({
+        "correct": is_correct,
+        "message": "Correct! 🎉" if is_correct else f"Incorrect. The correct answer is {molecule['name']}."
+    })
+
+@main.route('/predict', methods=['POST'])
+def predict():
+    """API endpoint to predict the product of a chemical reaction."""
+    data = request.get_json()
+    if 'reactants' not in data:
+        return jsonify({"error": "Missing reactants"}), 400
+
+    try:
+        reactants = parse_reaction(data['reactants'])
+        product = predict_product(reactants)
+
+        if product == "Unknown Product":
+            return jsonify({"error": "Could not predict the reaction."}), 400
+
+        return jsonify({"reactants": reactants, "predicted_product": product})
+
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@main.route('/balance', methods=['POST'])
+def balance():
+    """API endpoint to balance a chemical reaction."""
+    data = request.get_json()
+    if 'reactants' not in data or 'product' not in data:
+        return jsonify({"error": "Missing reactants or product"}), 400
+
+    try:
+        reactants = parse_reaction(data['reactants'])
+        product = data['product']
+        balanced_equation = balance_reaction(reactants, product)
+
+        return jsonify({"reactants": reactants, "product": product, "balanced_equation": balanced_equation})
+
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+

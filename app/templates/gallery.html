@@ -25,7 +25,7 @@
                 name="min_weight" 
                 class="form-control" 
                 placeholder="Min Weight" 
-                value="{{ min_weight }}">
+                value="{{ min_weight|default('', true) }}">
         </div>
         <div class="col-lg-2 col-md-6">
             <input 
@@ -33,7 +33,7 @@
                 name="max_weight" 
                 class="form-control" 
                 placeholder="Max Weight" 
-                value="{{ max_weight }}">
+                value="{{ max_weight|default('', true) }}">
         </div>
     
         <!-- Sort By -->
@@ -49,7 +49,6 @@
             <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
         </div>
     </form>
-    
 
     <!-- Molecule List -->
     <div class="row">
@@ -83,7 +82,7 @@
         <ul class="pagination justify-content-center mt-4">
             {% if page > 1 %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('main.gallery', page=page-1, search=search, sort_by=sort_by, min_weight=min_weight, max_weight=max_weight) }}">
+                <a class="page-link" href="{{ url_for('main.gallery', page=page-1, search=search, sort_by=sort_by, min_weight=min_weight|default('', true), max_weight=max_weight|default('', true)) }}">
                     &laquo; Previous
                 </a>
             </li>
@@ -91,13 +90,13 @@
             
             {% for p in range(1, total_pages + 1) %}
             <li class="page-item {% if p == page %}active{% endif %}">
-                <a class="page-link" href="{{ url_for('main.gallery', page=p, search=search, sort_by=sort_by, min_weight=min_weight, max_weight=max_weight) }}">{{ p }}</a>
+                <a class="page-link" href="{{ url_for('main.gallery', page=p, search=search, sort_by=sort_by, min_weight=min_weight|default('', true), max_weight=max_weight|default('', true)) }}">{{ p }}</a>
             </li>
             {% endfor %}
             
             {% if page < total_pages %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('main.gallery', page=page+1, search=search, sort_by=sort_by, min_weight=min_weight, max_weight=max_weight) }}">
+                <a class="page-link" href="{{ url_for('main.gallery', page=page+1, search=search, sort_by=sort_by, min_weight=min_weight|default('', true), max_weight=max_weight|default('', true)) }}">
                     Next &raquo;
                 </a>
             </li>

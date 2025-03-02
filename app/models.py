@@ -14,3 +14,10 @@ def get_molecule_collection():
     """
     mongo = PyMongo(current_app)
     return mongo.db.molecules
+
+def get_comment_collection():
+    """
+    Returns the MongoDB comments collection.
+    """
+    mongo = PyMongo(current_app)
+    return mongo.db.comments

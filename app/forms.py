@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, FloatField, SubmitField
+from wtforms import StringField, PasswordField, FloatField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 class MoleculeForm(FlaskForm):
@@ -7,6 +7,7 @@ class MoleculeForm(FlaskForm):
     formula = StringField("Formula", validators=[DataRequired()])
     molecular_weight = FloatField("Molecular Weight", validators=[DataRequired()])
     structure = StringField("Structure (SMILES)", validators=[DataRequired()])
+    description = TextAreaField("Description", validators=[DataRequired()])
     submit = SubmitField("Add Molecule")
 
 class LoginForm(FlaskForm):

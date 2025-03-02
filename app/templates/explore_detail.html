@@ -28,18 +28,13 @@
                             <strong>Molecular Weight:</strong> {{ molecule.molecular_weight }}
                         </li>
                         <li class="list-group-item">
+                            <strong>Molecular Smiles:</strong> {{ molecule.structure }}
+                        </li>
+                        <li class="list-group-item">
                             <strong>Description:</strong> {{ molecule.description }}
                         </li>
                     </ul>
                 </div>
-            </div>
-
-            <!-- Additional Information Section -->
-            <div class="mt-5">
-                <h4 class="text-secondary mb-4">Additional Information</h4>
-                <p class="text-muted">
-                    {{ molecule.additional_info if molecule.additional_info else "No additional information available for this molecule." }}
-                </p>
             </div>
         </div>
     </div>

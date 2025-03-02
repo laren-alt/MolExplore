@@ -43,6 +43,64 @@
         </div>
     </div>
 
+    <!-- Comments Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-dark text-white text-center">
+            <h4>Community Notes & Comments</h4>
+        </div>
+        <div class="card-body">
+            <!-- Comment Form -->
+            <form id="commentForm" class="needs-validation" novalidate>
+                <div class="form-group mb-3">
+                    <label for="commenter-name">Your Name:</label>
+                    <input type="text" id="commenter-name" name="commenter_name" class="form-control" placeholder="Enter your name" required>
+                    <div class="invalid-feedback">Please enter a commenter name.</div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="comment-text">Add a Comment:</label>
+                    <textarea id="comment-text" name="comment_text" class="form-control" rows="3"
+                        placeholder="Share your notes, references, or interesting facts..." required></textarea>
+                    <div class="invalid-feedback">Please enter a comment before submitting.</div>
+                </div>
+                <button type="button" class="btn btn-primary" id="add_comment">Submit Comment</button>
+            </form>
+    
+            <hr>
+    
+            <!-- Comments List -->
+            <ul id="comments-list" class="list-group">
+                {% for comment in comments %}
+                <li class="list-group-item d-flex justify-content-between align-items-center comment-item" id="comment-{{ comment._id }}">
+                    <div>
+                        <p class="mb-1 comment-text">
+                            <strong>{{ comment.commenter_name or "Anonymous" }}</strong>: 
+                            {{ comment.text[:100] }}{% if comment.text|length > 100 %}...
+                            <a href="#" class="show-more" data-fulltext="{{ comment.text }}">Show More</a>
+                            {% endif %}
+                        </p>
+                        <small class="text-muted">Posted on {{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    </div>
+                    <div class="comment-actions">
+                        <!-- Favorite Button -->
+                        <button class="btn btn-sm favorite-btn {% if session['user_id'] in comment.favorited_by %}favorited{% endif %}"
+                                data-comment-id="{{ comment._id }}">
+                            ❤️ <span class="favorite-count">{{ comment.favorite_count }}</span>
+                        </button>
+                        
+                        {% if session.get("role") == "admin" %}
+                        <button class="btn btn-danger btn-sm delete-comment" data-comment-id="{{ comment._id }}">
+                            Delete
+                        </button>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            
+            
+        </div>
+    </div>
+
     <!-- Visualization Section -->
     <div class="card shadow mb-4">
         <div class="card-header bg-secondary text-white text-center">
@@ -78,29 +136,33 @@
             <h4>Chemical Reaction Simulator</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ url_for('main.details', molecule_id=molecule._id) }}" class="needs-validation" novalidate>
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    <label for="reaction-input">Enter a reaction (e.g., H2 + O2 -> ?):</label>
-                    {{ form.reaction(class="form-control", placeholder="Reaction input") }}
-                </div>
-                <button type="submit" class="btn btn-primary mt-3">Simulate</button>
+            <form id="predictForm" class="needs-validation">
+                <label for="reaction-input">Enter a reaction (e.g., H2 + O2 -> ?):</label>
+                <input type="text" id="reaction-input" class="form-control" placeholder="Reactants" required>
+                <button type="button" class="btn btn-primary mt-3" id="predict_btn">Predict Product</button>
             </form>
             
-            {% if reaction_result %}
-            <div class="mt-4">
-                <h5>Balanced Reaction:</h5>
-                <p class="text-success">{{ reaction_result }}</p>
-            </div>
-            {% endif %}
+            <div id="prediction-result" class="mt-4"></div>
+            
+            <form id="balanceForm" class="needs-validation mt-4">
+                <label for="product-input">Predicted Product:</label>
+                <input type="text" id="product-input" class="form-control" placeholder="Product" required>
+                <button type="button" class="btn btn-success mt-3" id="balance_btn">Balance Reaction</button>
+            </form>
+            
+            <div id="balance-result" class="mt-4"></div>
             
         </div>
     </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
 <script src="{{ url_for('static', filename='js/RDKit_minimal.js') }}"></script>
 <script src="{{ url_for('static', filename='js/3Dmol.js') }}"></script>
+
 <script>
+    // Get CSRF token from meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr("content");
     document.addEventListener("DOMContentLoaded", function () {
         window.initRDKitModule().then(function (RDKit) {
             // Render 2D Structure
@@ -112,41 +174,277 @@
             } else {
                 structure2dDiv.innerHTML = "<p class='text-danger'>Failed to render 2D structure.</p>";
             }
-
+    
             // Render 3D Structure
             const viewer = $3Dmol.createViewer("viewer-3d", {
                 backgroundColor: "white",
             });
-            if (mol2D) {
-                const conformer = mol2D.get_new_coords();
-                viewer.addModel(conformer, "mol");
-                viewer.setStyle({}, { stick: { radius: 0.15 } });
-                viewer.zoomTo();
-                viewer.render();
-            } else {
-                console.error("Failed to generate 3D conformer.");
+    
+            try {
+                const mol3D = RDKit.get_mol("{{ molecule.structure }}");
+                if (mol3D) {
+                    const molBlock = mol3D.get_new_coords();
+                    
+                    viewer.addModel(molBlock, "mol");
+                    viewer.setStyle({}, { stick: { radius: 0.4, colorscheme: "Jmol" } }); // Improve visibility
+                    viewer.zoomTo();
+                    viewer.render();
+                } else {
+                    document.getElementById("viewer-3d").innerHTML =
+                        "<p class='text-danger'>Failed to generate 3D structure.</p>";
+                }
+            } catch (error) {
+                console.error("Error rendering molecule:", error);
+                document.getElementById("viewer-3d").innerHTML =
+                    "<p class='text-danger'>3D rendering failed.</p>";
             }
         }).catch(function (error) {
             console.error("Error initializing RDKit:", error);
         });
     });
 
-    (function () {
-        "use strict";
-        const forms = document.querySelectorAll(".needs-validation");
-        Array.from(forms).forEach(function (form) {
-            form.addEventListener(
-                "submit",
-                function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
+    // Submit comment form via AJAX
+    $("#add_comment").on("click", function (e) {
+        var form = $("#commentForm");
+        if (form[0].checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+            form[0].classList.add("was-validated");
+            return;
+        }
+        let commenterName = $("#commenter-name").val().trim() || "Anonymous";
+        let commentText = $("#comment-text").val().trim();
+        if (commentText === "") {
+            $("#comment-text").addClass("is-invalid");
+            return;
+        }
+        $("#comment-text").removeClass("is-invalid");
+    
+        $.ajax({
+            url: "{{ url_for('main.add_comment', molecule_id=molecule._id) }}",
+            type: "POST",
+            headers: { "X-CSRFToken": csrfToken },  
+            contentType: "application/json",
+            data: JSON.stringify({ commenter_name: commenterName, comment_text: commentText }),
+            success: function (response) {
+                if (response.success) {
+                    let fullText = response.comment.text;
+                    let shortText = fullText.length > 100 ? fullText.substring(0, 100) + "..." : fullText;
+                    let showMoreLink = fullText.length > 100 ? `<a href="#" class="show-more" data-fulltext="${fullText}">Show More</a>` : "";
+    
+                    // Append new comment with favorite button
+                    let newComment = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center comment-item" id="comment-${response.comment.id}">
+                            <div>
+                                <p class="mb-1 comment-text"><strong>${commenterName}</strong>:${shortText} ${showMoreLink}</p>
+                                <small class="text-muted">Just now</small>
+                            </div>
+                            <div class="comment-actions">
+                                <!-- Favorite Button -->
+                                <button class="btn btn-sm favorite-btn" data-comment-id="${response.comment.id}">
+                                    ❤️ <span class="favorite-count">0</span>
+                                </button>
+                                {% if session.get("role") == "admin" %}
+                                <button class="btn btn-danger btn-sm delete-comment" data-comment-id="${response.comment.id}">
+                                    Delete
+                                </button>
+                                {% endif %}
+                            </div>
+                        </li>`;
+                    
+                    $("#comments-list").prepend(newComment);
+                    $("#comment-text").val("");
+                    $("#commenter-name").val("");
+                    $("#comment-text").removeClass("is-invalid");
+                    $("#commenter-name").removeClass("is-invalid");
+                    $("#no-comments-message").hide();
+
+                    // **Limit to 10 comments**
+                    if ($("#comments-list .comment-item").length > 10) {
+                        $("#comments-list .comment-item:last").remove(); // Remove the oldest comment
                     }
-                    form.classList.add("was-validated");
-                },
-                false
-            );
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (error) {
+                console.log("Error:", error);
+            }
         });
-    })();
+    });
+    
+    // Delete comment via AJAX
+    $(document).on("click", ".delete-comment", function () {
+        let commentId = $(this).data("comment-id");
+        if (!confirm("Are you sure you want to delete this comment?")) return;
+
+        $.ajax({
+            url: `/comment/delete/${commentId}`,
+            type: "POST",
+            contentType: "application/json",
+            headers: { "X-CSRFToken": csrfToken },
+            success: function (response) {
+                if (response.success) {
+                    $("#comment-" + commentId).remove();
+                }
+            },
+            error: function () {
+                alert("Error deleting comment.");
+            }
+        });
+    });
+    $(document).on("click", ".show-more", function (e) {
+        e.preventDefault();
+        
+        let fullText = $(this).data("fulltext");
+        let parent = $(this).closest(".comment-text");
+        
+        parent.html(fullText + ' <a href="javascript:void(0);" class="show-less">Show Less</a>');
+    });
+    
+    $(document).on("click", ".show-less", function (e) {
+        e.preventDefault();
+        
+        let shortText = $(this).closest(".comment-text").text().substring(0, 100) + "...";
+        $(this).closest(".comment-text").html(shortText + ' <a href="javascript:void(0);" class="show-more" data-fulltext="' + $(this).closest(".comment-text").text() + '">Show More</a>');
+    });
+
+    $(document).on("click", ".favorite-btn", function() {
+      let commentId = $(this).data("comment-id");
+      let button = $(this);
+      let countSpan = button.find(".favorite-count");
+      let currentCount = parseInt(countSpan.text()) || 0;
+
+      // Check if we've already liked this comment in localStorage
+      let localKey = `liked_comment_${commentId}`;
+      let hasLiked = localStorage.getItem(localKey);
+
+      if (!hasLiked) {
+          // If not liked yet, set localStorage and increment
+          localStorage.setItem(localKey, "true");
+          currentCount++;
+          countSpan.text(currentCount);
+          button.addClass("favorited");
+
+          // Optionally tell server: "increment favorite"
+          $.ajax({
+              url: `/comment/favorite/${commentId}`,
+              type: "POST",
+              headers: { "X-CSRFToken": csrfToken },
+              contentType: "application/json",
+              success: function (response) {
+                  if (!response.success) {
+                      // If server fails to update, revert local changes
+                      alert(response.message || "Error updating favorite on server.");
+                      // revert:
+                      localStorage.removeItem(localKey);
+                      currentCount = Math.max(0, currentCount - 1);
+                      countSpan.text(currentCount);
+                      button.removeClass("favorited");
+                  }
+              },
+              error: function () {
+                  alert("Error updating favorite on server.");
+                  // revert local changes
+                  localStorage.removeItem(localKey);
+                  currentCount = Math.max(0, currentCount - 1);
+                  countSpan.text(currentCount);
+                  button.removeClass("favorited");
+              }
+          });
+      } else {
+          // Already liked => user wants to "unlike"
+          localStorage.removeItem(localKey);
+          currentCount = Math.max(0, currentCount - 1);
+          countSpan.text(currentCount);
+          button.removeClass("favorited");
+
+          // Optionally tell server: "decrement favorite"
+          $.ajax({
+              url: `/comment/unfavorite/${commentId}`, // you'd need a new route
+              type: "POST",
+              headers: { "X-CSRFToken": csrfToken },
+              contentType: "application/json",
+              success: function (response) {
+                  if (!response.success) {
+                      // If server fails to update, revert
+                      alert(response.message || "Error updating favorite on server.");
+                      // revert:
+                      localStorage.setItem(localKey, "true");
+                      currentCount++;
+                      countSpan.text(currentCount);
+                      button.addClass("favorited");
+                  }
+              },
+              error: function () {
+                  alert("Error updating favorite on server.");
+                  // revert local changes
+                  localStorage.setItem(localKey, "true");
+                  currentCount++;
+                  countSpan.text(currentCount);
+                  button.addClass("favorited");
+              }
+          });
+      }
+  });
+
+    $(document).on("click", "#predict_btn", function (e) {
+        e.preventDefault();
+        let reactants = $("#reaction-input").val().trim();
+        
+        if (!reactants) {
+            alert("Please enter a reaction!");
+            return;
+        }
+    
+        $.ajax({
+            url: "/predict",
+            type: "POST",
+            contentType: "application/json",
+            headers: { "X-CSRFToken": csrfToken },
+            data: JSON.stringify({ reactants: reactants }),
+            success: function (response) {
+                if (response.predicted_product) {
+                    $("#prediction-result").html(`<h5>Predicted Product:</h5><p class="text-success">${response.predicted_product}</p>`);
+                } else {
+                    alert(response.error || "Could not predict the reaction.");
+                }
+            },
+            error: function () {
+                alert("Error predicting reaction.");
+            }
+        });
+    });
+    
+    $(document).on("click", "#balance_btn", function (e) {
+        e.preventDefault();
+        let reactants = $("#reaction-input").val().trim();
+        let product = $("#product-input").val().trim();
+    
+        if (!reactants || !product) {
+            alert("Please enter both reactants and product!");
+            return;
+        }
+    
+        $.ajax({
+            url: "/balance",
+            type: "POST",
+            contentType: "application/json",
+            headers: { "X-CSRFToken": csrfToken },
+            data: JSON.stringify({ reactants: reactants, product: product }),
+            success: function (response) {
+                if (response.balanced_equation) {
+                    $("#balance-result").html(`<h5>Balanced Equation:</h5><p class="text-success">${response.balanced_equation}</p>`);
+                } else {
+                    alert(response.error || "Could not balance the reaction.");
+                }
+            },
+            error: function () {
+                alert("Error balancing reaction.");
+            }
+        });
+    });
+    
+    
 </script>
 {% endblock %}

@@ -47,6 +47,15 @@
                     </div>
                 </div>
 
+                <!-- Description Field -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    {{ form.description(class="form-control", id="description", rows=4, placeholder="Enter molecule description", required=True) }}
+                    <div class="invalid-feedback">
+                        Please provide a description of the molecule.
+                    </div>
+                </div>
+
                 <!-- Submit Button -->
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -55,6 +64,7 @@
         </div>
     </div>
 </div>
+
 <script>
     // Bootstrap Validation Script
     (function () {

@@ -3,46 +3,62 @@ from rdkit.Chem import AllChem, rdMolDescriptors, DataStructs
 from sympy import symbols, Eq, solve
 import re
 from collections import Counter
+from pymatgen.core import Composition, Element
+from math import gcd
+
 
 def calculate_properties(structure):
     mol = Chem.MolFromSmiles(structure)
     molecular_weight = rdMolDescriptors.CalcExactMolWt(mol)
     return {"molecular_weight": molecular_weight}
 
-def find_similar_molecules(target_molecule, molecule_collection, threshold=0.7):
-    # Convert the target molecule to an RDKit molecule object
-    target_mol = Chem.MolFromSmiles(target_molecule)
-    if target_mol is None:
-        raise ValueError(f"Invalid SMILES string for target molecule: {target_molecule}")
+def find_similar_molecules(target_smiles, molecule_collection, target_id, tanimoto_weight=0.5, dice_weight=0.3, cosine_weight=0.2):  
+    # Convert the target molecule to RDKit format
+    target_mol = Chem.MolFromSmiles(target_smiles)
+    if not target_mol:
+        raise ValueError(f"Invalid SMILES string: {target_smiles}")
 
-    # Generate a fingerprint for the target molecule
+    # Compute Morgan fingerprint for the target molecule
     target_fp = AllChem.GetMorganFingerprintAsBitVect(target_mol, radius=2, nBits=2048)
-
+    
     similar_molecules = []
 
     for molecule in molecule_collection:
-        # Get the SMILES string of the molecule in the collection
         db_smiles = molecule.get("structure")
-        db_name = molecule.get("name", "Unknown")
-        db_formula = molecule.get("formula")
-        if not db_smiles:
+        db_id = str(molecule["_id"])  # Convert ObjectId to string
+
+        # Skip if the molecule has no structure or is the same as the target
+        if not db_smiles or db_id == target_id:
             continue
 
-        # Convert to RDKit molecule and compute fingerprint
+        # Convert database molecule to RDKit format
         db_mol = Chem.MolFromSmiles(db_smiles)
-        if db_mol is None:
-            continue
+        if not db_mol:
+            continue  # Skip invalid molecules
+
+        # Compute fingerprints
         db_fp = AllChem.GetMorganFingerprintAsBitVect(db_mol, radius=2, nBits=2048)
 
-        # Calculate Tanimoto similarity
-        similarity = DataStructs.TanimotoSimilarity(target_fp, db_fp)
-        if similarity >= threshold:
-            similar_molecules.append({"_id": str(molecule["_id"]), "name": db_name, "formula": db_formula, "structure": db_smiles, "similarity": round(similarity, 2)})
+        # Compute similarity scores
+        tanimoto_sim = DataStructs.TanimotoSimilarity(target_fp, db_fp)
+        dice_sim = DataStructs.DiceSimilarity(target_fp, db_fp)
+        cosine_sim = DataStructs.FingerprintSimilarity(target_fp, db_fp, metric=DataStructs.CosineSimilarity)
 
-    # Sort by similarity in descending order
-    similar_molecules = sorted(similar_molecules, key=lambda x: x["similarity"], reverse=True)
+        # Weighted similarity score
+        weighted_similarity = (tanimoto_weight * tanimoto_sim) + (dice_weight * dice_sim) + (cosine_weight * cosine_sim)
 
-    return similar_molecules
+        # Keep only molecules with similarity > 0.2 and < 0.95
+        if 0.25 < weighted_similarity < 0.95:  
+            similar_molecules.append({
+                "_id": db_id,
+                "name": molecule.get("name", "Unknown"),
+                "formula": molecule.get("formula", "N/A"),
+                "structure": db_smiles,
+                "similarity": round(weighted_similarity, 3)  # Round for cleaner output
+            })
+
+    # Sort results by similarity score (highest first)
+    return sorted(similar_molecules, key=lambda x: x["similarity"], reverse=True)
 
 def calculate_bond_count(smiles: str) -> int:
     """
@@ -138,35 +154,157 @@ def simulate_reaction(reaction_input: str) -> str:
         return f"Error balancing reaction: {e}"
 
 def handle_small_molecule(compound):
-    """Convert small molecule names (like H2, O2) into valid RDKit objects."""
-    # Regular expression to detect diatomic molecules (e.g., H2, O2, N2)
+    """Convert simple molecules (like H2, O2) into valid SMILES strings."""
+    if not compound or not compound.strip():
+        raise ValueError("Empty molecule input received.")
+
     diatomic_pattern = re.compile(r"([A-Za-z]+)(\d*)")
-    
-    # Handle simple diatomic molecules (like H2, O2, N2)
-    match = diatomic_pattern.match(compound)
+
+    match = diatomic_pattern.fullmatch(compound.strip())
     if match:
         element = match.group(1)
-        count = match.group(2)
-        count = int(count) if count else 2  # Default to 2 if no count is specified
-        # Generate SMILES for diatomic molecules (e.g., H2 -> [H][H], O2 -> [O][O])
-        smiles = f"[{element}][{element}]"
+        count = int(match.group(2)) if match.group(2) else 2  # Default to 2 if unspecified
+        smiles = f"[{element}]" * count  # Example: O2 -> [O][O]
         mol = Chem.MolFromSmiles(smiles)
-        if mol is None:
-            raise ValueError(f"Failed to create molecule from SMILES: {smiles}")
-        return mol
+        if mol:
+            return Chem.MolToSmiles(mol)
 
-    # For non-diatomic molecules, return the original compound
-    mol = Chem.MolFromSmiles(compound)
-    if mol is None:
-        raise ValueError(f"Failed to create molecule from SMILES: {compound}")
-    return mol
+    # Convert standard molecules using RDKit
+    mol = Chem.MolFromSmiles(compound.strip())
+    if mol:
+        return Chem.MolToSmiles(mol)  # Ensure output is a string
+
+    raise ValueError(f"Invalid molecule input: {compound}")
 
 def parse_formula(formula):
     """Parse chemical formula into element counts."""
     element_pattern = re.compile(r"([A-Z][a-z]*)(\d*)")
+    from collections import Counter
     parsed_elements = Counter()
     for match in element_pattern.finditer(formula):
         element = match.group(1)
         count = int(match.group(2)) if match.group(2) else 1
         parsed_elements[element] += count
     return parsed_elements
+
+def parse_reaction(reaction_str):
+    """
+    Extract reactants from user input (left of '->'), e.g., "Na + Cl2 -> ?".
+    Validate them using pymatgen's Composition.
+    """
+    left_side = reaction_str.split("->")[0].strip()
+    reactants = [r.strip() for r in left_side.split("+") if r.strip()]
+    for r in reactants:
+        Composition(r)  # raises ValueError if invalid
+    return reactants
+
+def get_oxidation_state(element):
+    """Retrieve the most common oxidation state of an element."""
+    try:
+        el = Element(element)
+        ox_states = el.common_oxidation_states
+        return ox_states[0] if ox_states else None
+    except:
+        return None
+
+def predict_product(reactants):
+    """
+    Predict a product by combining the first two distinct elements from reactants.
+    Example: "Na" + "Cl2" => "NaCl".
+    """
+    if not reactants:
+        return "Unknown Product"
+
+    # Gather unique element symbols from all reactants
+    unique_elems = []
+    for r in reactants:
+        for el in Composition(r).elements:
+            if el.symbol not in unique_elems:
+                unique_elems.append(el.symbol)
+
+    if len(unique_elems) < 2:
+        return "Unknown Product"
+
+    e1, e2 = unique_elems[0], unique_elems[1]
+    ox1, ox2 = get_oxidation_state(e1), get_oxidation_state(e2)
+    if ox1 is None or ox2 is None:
+        return "Unknown Product"
+
+    # Cross-multiply absolute oxidation numbers for simplest ratio
+    g1, g2 = abs(ox2), abs(ox1)
+    return f"{e1}{g1 if g1 > 1 else ''}{e2}{g2 if g2 > 1 else ''}"
+    
+    return product_formula
+
+def extract_element_count(formula, element):
+    """Extract element count safely from a chemical formula."""
+    match = re.findall(rf'({element})(\d*)', formula)
+    if match:
+        count = match[0][1] or "1"  # If no number, assume 1
+        return int(count)
+    return 1
+
+def balance_reaction(reactants, product):
+    """
+    Balance a reaction with one or more reactants and a single product
+    using a matrix null-space approach.
+    Example:
+      reactants = ["Na", "Cl2"], product = "NaCl"
+      => "2 Na + 1 Cl2 -> 2 NaCl"
+    """
+    from sympy import Matrix
+
+    # Build a list of species: reactants + [product]
+    species = reactants + [product]
+
+    # Find all elements in those species
+    all_text = "".join(species)
+    elements = re.findall(r"[A-Z][a-z]?", all_text)
+    unique_elems = sorted(set(elements))
+
+    # Construct a matrix: rows = elements, columns = species
+    # Reactants get positive counts, product is negative (so sum = 0).
+    stoich_rows = []
+    for elem in unique_elems:
+        row = []
+        for i, sp in enumerate(species):
+            # Count how many times elem appears in sp
+            c = parse_formula(sp).get(elem, 0)
+            # For the product (last column), we use negative
+            row.append(c if i < len(reactants) else -c)
+        stoich_rows.append(row)
+
+    # Convert to a sympy Matrix and compute the nullspace
+    M = Matrix(stoich_rows)
+    ns = M.nullspace()
+    if not ns:
+        return "Unable to balance"
+
+    # Usually there's a single vector in ns for a simple reaction
+    for vec in ns:
+        # Scale vector to get integer coefficients
+        denominators = [v.q for v in vec]
+        lcm_denom = 1
+        for d in denominators:
+            lcm_denom = lcm_denom * d // gcd(lcm_denom, d)
+
+        scaled = [int(lcm_denom * v) for v in vec]
+
+        # Ensure product coefficient is positive
+        if scaled[-1] < 0:
+            scaled = [-x for x in scaled]
+
+        # Skip trivial solutions if product <= 0 or all reactants = 0
+        if scaled[-1] <= 0 or all(x == 0 for x in scaled[:-1]):
+            continue
+
+        # If any reactant coefficient <= 0, skip
+        if any(x <= 0 for x in scaled[:-1]):
+            continue
+
+        # Build final string "2 Na + 1 Cl2 -> 2 NaCl"
+        reactant_side = " + ".join(f"{scaled[i]} {r}" for i, r in enumerate(reactants))
+        product_side = f"{scaled[-1]} {product}"
+        return f"{reactant_side} -> {product_side}"
+
+    return "Unable to balance"

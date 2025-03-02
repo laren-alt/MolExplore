@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <meta name="description" content="Explore chemical molecules interactively">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{% block title %}MolExplore{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
@@ -39,6 +40,9 @@
                         <a class="nav-link {% if 'stats' in request.path %}active{% endif %}" href="{{ url_for('main.stats') }}">Statistics</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if 'chemistry_quiz' in request.path %}active{% endif %}" href="{{ url_for('main.chemistry_quiz') }}">Quiz</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if 'admin' in request.path %}active{% endif %}" href="{{ url_for('main.admin') }}">Admin Panel</a>
                     </li>
                     {% if session.get('user') %}
@@ -51,6 +55,20 @@
         </div>
     </nav>
 
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
     <!-- Content Section -->
     <div class="container mt-4">
         {% block content %}{% endblock %}
@@ -60,6 +78,19 @@
     <footer class="bg-light text-center py-3">
         <p class="mb-0">&copy; 2025 MolExplore. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Auto-dismiss flash messages after 5 seconds
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(() => {
+                const alerts = document.querySelectorAll(".alert-dismissible");
+                alerts.forEach(alert => {
+                    alert.classList.add("fade");
+                    setTimeout(() => alert.remove(), 1000);
+                });
+            }, 5000);
+        });
+    </script>
 </body>
 
 </html>

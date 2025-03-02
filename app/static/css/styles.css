@@ -131,3 +131,30 @@ footer {
     flex-direction: column;
     height: 100%;
 }
+
+.pagination .btn {
+    margin: 0 5px;
+    font-size: 16px;
+}
+
+.pagination .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.molecule-images-section {
+    margin-bottom: 100px;
+}
+
+.favorite-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+.favorite-btn.favorited {
+    color: red;  /* Highlight when favorited */
+    font-weight: bold;
+}

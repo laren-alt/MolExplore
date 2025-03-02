@@ -95,7 +95,7 @@
                 const conformer = mol2D.get_new_coords();
                 if (conformer) {
                     viewer.addModel(conformer, "mol");
-                    viewer.setStyle({}, { stick: { radius: 0.15 } });
+                    viewer.setStyle({}, { stick: { radius: 0.4 } });
                     viewer.zoomTo();
                     viewer.render();
                 } else {

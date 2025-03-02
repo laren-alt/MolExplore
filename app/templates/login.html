@@ -11,7 +11,7 @@
             <form method="POST" class="needs-validation" novalidate>
                 {{ form.hidden_tag() }}
                 
-                <!-- Flash Messages 
+                <!-- Flash Messages -->
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         <div class="alert alert-danger">
@@ -21,7 +21,7 @@
                         </div>
                     {% endif %}
                 {% endwith %}
-                -->
+                <!-- -->
                 <!-- Username Field -->
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>

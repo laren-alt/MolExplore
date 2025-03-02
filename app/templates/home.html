@@ -47,9 +47,10 @@
 <!-- Search Bar -->
 <section class="search-section py-5">
     <div class="container">
-        <form class="form-inline d-flex justify-content-center">
-            <input id="search-input" class="form-control form-control-lg w-50 mr-2" type="search" placeholder="Search for molecules..." aria-label="Search" oninput="filterMolecules()">
-            <button class="btn btn-success btn-lg" type="button" onclick="clearSearch()">Clear</button>
+        <form class="form-inline d-flex justify-content-center" method="GET" action="{{ url_for('main.home') }}">
+            <input id="search-input" class="form-control form-control-lg w-50 mr-2" 
+                   type="search" name="search" value="{{ search_query }}" placeholder="Search for molecules..." aria-label="Search">
+            <button class="btn btn-success btn-lg" type="submit">Search</button>
         </form>
     </div>
 </section>
@@ -76,6 +77,24 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination Links -->
+        <div class="pagination text-center mt-4 d-flex justify-content-center">
+            {% if current_page > 1 %}
+            <a href="{{ url_for('main.home', page=current_page - 1, search=search_query) }}" class="btn btn-primary">Previous</a>
+            {% endif %}
+
+            {% for page_num in range(1, total_pages + 1) %}
+            <a href="{{ url_for('main.home', page=page_num, search=search_query) }}" class="btn {{ 'btn-secondary' if page_num == current_page else 'btn-outline-primary' }}">
+                {{ page_num }}
+            </a>
+            {% endfor %}
+
+            {% if current_page < total_pages %}
+            <a href="{{ url_for('main.home', page=current_page + 1, search=search_query) }}" class="btn btn-primary">Next</a>
+            {% endif %}
+        </div>
+
     </div>
 </section>
 
